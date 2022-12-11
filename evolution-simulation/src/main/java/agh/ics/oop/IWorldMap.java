@@ -1,5 +1,8 @@
 package agh.ics.oop;
 
+import java.util.TreeSet;
+
+
 /**
  * The interface responsible for interacting with the map of the world.
  * Assumes that Vector2d and MoveDirection classes are defined.
@@ -7,42 +10,56 @@ package agh.ics.oop;
  * @author apohllo
  *
  */
+
 public interface IWorldMap {
-    /**
-     * Indicate if any object can move to the given position.
-     *
-     * @param position
-     *            The position checked for the movement possibility.
-     * @return True if the object can move to that position.
-     */
-    boolean canMoveTo(Vector2d position);
+
+//
+//    probably unnecessary (for now)
+//
+//    /**
+//     * Indicate if any object can move to the given position.
+//     *
+//     * @param position
+//     *            The position checked for the movement possibility.
+//     * @return True if the object can move to that position.
+//     */
+//    boolean canMoveTo(Vector2d position);
+//
+//    /**
+//     * Return true if given position on the map is occupied. Should not be
+//     * confused with canMove since there might be empty positions where the animal
+//     * cannot move.
+//     *
+//     * @param position
+//     *             position to check.
+//     * @return True if the position is occupied.
+//     */
+//    boolean isOccupied(Vector2d position);
 
     /**
-     * Place a animal on the map.
+     * Places an animal on the map.
      *
      * @param animal
-     *            The animal to place on the map.
-     * @return True if the animal was placed. The animal cannot be placed if the map is already occupied.
+     *            The animal to be placed on the map.
      */
-    boolean place(Animal animal);
+    void place (Animal animal);
+
+
 
     /**
-     * Return true if given position on the map is occupied. Should not be
-     * confused with canMove since there might be empty positions where the animal
-     * cannot move.
+     * Returns animals at the given position.
      *
      * @param position
-     *            Position to check.
-     * @return True if the position is occupied.
+     *            The position of the animals.
+     * @return TreeSet of the animals occupying the given position.
      */
-    boolean isOccupied(Vector2d position);
+    TreeSet<Animal> animalsAt(Vector2d position);
 
     /**
-     * Return an object at a given position.
+     * Normalizes energy, position and direction of the animal
      *
-     * @param position
-     *            The position of the object.
-     * @return Object or null if the position is not occupied.
+     * @param animal
+     *            Animal to be normalized
      */
-    Object objectAt(Vector2d position);
+    void normalizeAnimalState(Animal animal, Vector2d newPosition);
 }
