@@ -5,8 +5,14 @@ public class Animal extends AbstractWorldMapElement{
     private int age = 0;
     private int childCounter = 0;
 
+
     public Animal(Vector2d position){
         super(position);
+    }
+
+    @Override
+    public String toString() {
+        return "x";
     }
 
     public MapDirection getOrientation(){
