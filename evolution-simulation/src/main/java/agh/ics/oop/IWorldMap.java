@@ -42,7 +42,7 @@ public interface IWorldMap {
      * @param animal
      *            The animal to be placed on the map.
      */
-    void place (Animal animal);
+    void placeAnimal(Animal animal);
 
 
 
@@ -62,4 +62,12 @@ public interface IWorldMap {
      *            Animal to be normalized
      */
     void normalizeAnimalState(Animal animal, Vector2d newPosition);
+
+    /**
+     * Removes the animal from the given positiob
+     *
+     * @param animal
+     *            Animal to be removed
+     */
+    void removeAnimal(Animal animal);
 }

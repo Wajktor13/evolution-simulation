@@ -3,13 +3,9 @@ package agh.ics.oop;
 
 public class SphericalWorldMap extends AbstractWorldMap{
 
-    public SphericalWorldMap(int width, int height){
-        super(width, height);
-    }
 
-    @Override
-    public void place(Animal animal){
-
+    public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner){
+        super(width, height, plantsSpawner);
     }
 
     @Override
