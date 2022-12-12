@@ -60,17 +60,17 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         int childCounter2 = animal2.getChildCounter();
         
         if (energy1 > energy2){
-            return 1;
+            return -1;
         } else if (energy1 < energy2) {
-            return -1;
+            return 1;
         } else if (age1 > age2) {
-            return 1;
+            return -1;
         } else if (age1 < age2) {
-            return -1;
-        } else if (childCounter1 > childCounter2){
             return 1;
-        } else if (childCounter1 < childCounter2) {
+        } else if (childCounter1 > childCounter2){
             return -1;
+        } else if (childCounter1 < childCounter2) {
+            return 1;
         } else {
             return 1;
         }
