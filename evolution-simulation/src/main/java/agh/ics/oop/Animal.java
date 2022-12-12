@@ -12,7 +12,7 @@ public class Animal extends AbstractWorldMapElement{
 
     @Override
     public String toString() {
-        return "x";
+        return "a";
     }
 
     public MapDirection getOrientation(){

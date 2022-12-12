@@ -8,6 +8,6 @@ public class Plant extends AbstractWorldMapElement{
 
     @Override
     public String toString() {
-        return "o";
+        return "p";
     }
 }
