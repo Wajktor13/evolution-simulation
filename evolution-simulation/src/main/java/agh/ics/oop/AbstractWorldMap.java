@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeSet;
 
 
+
 public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObserver{
     private final int width;
     private final int height;
