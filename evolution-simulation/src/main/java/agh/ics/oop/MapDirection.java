@@ -37,6 +37,10 @@ enum MapDirection{
         };
     }
 
+    public MapDirection oppositeDirection(){
+        return toMapDirection((toInt() + 4) % 8);
+    }
+
     @Override
     public String toString() {
         return switch (this) {

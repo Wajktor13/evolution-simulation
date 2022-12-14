@@ -44,6 +44,18 @@ public class Vector2d {
         return new Vector2d((-1) * this.x, (-1) * this.y);
     }
 
+    public boolean yBetween(Vector2d lower, Vector2d upper){
+        return this.y >= lower.y && this.y <= upper.y;
+    }
+
+    public boolean hasLowerX(Vector2d v){
+        return this.x < v.x;
+    }
+
+    public boolean hasHigherX(Vector2d v){
+        return this.x > v.x;
+    }
+
     public boolean equals(Object other){
         if (this == other){
             return  true;
@@ -60,5 +72,13 @@ public class Vector2d {
     public int hashCode(){
 
         return Objects.hash(this.x, this.y);
+    }
+
+    public int getX(){
+        return this.x;
+    }
+
+    public int getY(){
+        return this.y;
     }
 }

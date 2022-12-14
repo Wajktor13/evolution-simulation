@@ -15,7 +15,7 @@ public class World {
         int plantsGrowType = 0;
 
         int animalStartCount = 2;
-        int animalStartEnergy = 100;
+        int animalStartEnergy = 9;
         int animalReadyForReproductionEnergy = 60;
         int animalReproductionLostEnergy = 20;
         int animalMoveType = 0;
@@ -23,15 +23,17 @@ public class World {
         int childMinMutationCount = 0;
         int childMaxMutationCount = 10;
         int mutationType = 0;
-        int geneLength = 5;
+        int geneLength = 6;
+
+        int refreshTime = 1500;
 
         EquatorPlantsSpawner plantsSpawner = new EquatorPlantsSpawner();
         SphericalWorldMap map = new SphericalWorldMap(mapWidth, mapHeight, plantsSpawner);
         map.placePlants(plantsStartCount, plantEnergy);
-        Vector2d[] initialPositions = {new Vector2d(1, 3), new Vector2d(8, 2)};
-        SimulationEngine engine = new SimulationEngine(map, initialPositions, 1500, animalStartEnergy, geneLength);
+        Vector2d[] initialPositions = {new Vector2d(5, 5), new Vector2d(4, 5), new Vector2d(3, 2), new Vector2d(5, 6),
+                new Vector2d(4, 4), new Vector2d(2, 4), new Vector2d(4, 3)};
+        SimulationEngine engine = new SimulationEngine(map, initialPositions, refreshTime, animalStartEnergy, geneLength);
+
         engine.run();
-        System.out.println(map.getAnimalsHashMap());
-        System.out.println(map.getPlantsHashMap());
     }
 }

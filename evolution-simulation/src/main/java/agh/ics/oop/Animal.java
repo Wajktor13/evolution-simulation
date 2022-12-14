@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
 import java.util.Random;
+
 
 public class Animal extends AbstractWorldMapElement{
     private Random animalRandom = new Random();
@@ -8,18 +10,55 @@ public class Animal extends AbstractWorldMapElement{
     private int age = 0;
     private int childCounter = 0;
     public Gene animalGene;
+    private final ArrayList<IPositionChangeObserver> observers = new ArrayList<>();
+    private IWorldMap map;
 
 
-    public Animal(Vector2d position, int energy, int length){
+    public Animal(Vector2d position, int energy, int length, IWorldMap map){
         super(position, energy);
         this.animalGene = new Gene(length);
         this.orientation = MapDirection.toMapDirection(animalGene.getNextOrientation());
-        System.out.println(animalGene.getGene());
+        this.map = map;
+        this.observers.add((IPositionChangeObserver) map);
+    }
+
+    public static int animalsComparator(Animal animal1, Animal animal2){
+        int energy1 = animal1.getEnergy();
+        int energy2 = animal2.getEnergy();
+        int age1 = animal1.getAge();
+        int age2 = animal2.getAge();
+        int childCounter1 = animal1.getChildCounter();
+        int childCounter2 = animal2.getChildCounter();
+
+        if (energy1 > energy2){
+            return -1;
+        } else if (energy1 < energy2) {
+            return 1;
+        } else if (age1 > age2) {
+            return -1;
+        } else if (age1 < age2) {
+            return 1;
+        } else if (childCounter1 > childCounter2){
+            return -1;
+        } else if (childCounter1 < childCounter2) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     @Override
     public String toString() {
-        return orientation.toString();
+//        return orientation.toString();
+          return  " " + this.energy;
+    }
+
+    public void changeEnergy(int diff){
+        this.energy += diff;
+    }
+
+    public void changeAge(int diff){
+        this.age += diff;
     }
 
     public MapDirection getOrientation(){
@@ -35,10 +74,13 @@ public class Animal extends AbstractWorldMapElement{
     }
 
     public void changeOrientation(){
-        this.orientation = MapDirection.toMapDirection( (this.orientation.toInt() + animalGene.getNextOrientation()) % 8);
+        this.setOrientation(MapDirection.toMapDirection( (this.orientation.toInt() +
+                animalGene.getNextOrientation()) % 8));
     }
 
     public void moveAnimal(){
+        Vector2d oldPosition = this.position;
+
         Vector2d orientationVector = new Vector2d(0, 0);
         switch (this.orientation.toInt()){
             case 0:
@@ -59,6 +101,23 @@ public class Animal extends AbstractWorldMapElement{
             case 7: orientationVector = new Vector2d(-1, 1);
                 break;
         }
-        this.position = this.position.add(orientationVector);
+
+        this.setPosition(this.position.add(orientationVector));
+        this.map.normalizeAnimalState(this, oldPosition);
+        this.positionChanged(oldPosition);
+    }
+
+    public void positionChanged(Vector2d oldPosition){
+        for (IPositionChangeObserver observer : this.observers){
+            observer.animalPositionChanged(this, oldPosition);
+        }
+    }
+
+    public void setPosition(Vector2d newPosition){
+        this.position = newPosition;
+    }
+
+    public void setOrientation(MapDirection newOrientation){
+        this.orientation = newOrientation;
     }
 }

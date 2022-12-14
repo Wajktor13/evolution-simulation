@@ -9,5 +9,5 @@ public interface IPositionChangeObserver {
      * @param animal
      *            Animal that position has changed
      */
-    void positionChanged(Animal animal);
+    void animalPositionChanged(Animal animal, Vector2d oldPosition);
 }

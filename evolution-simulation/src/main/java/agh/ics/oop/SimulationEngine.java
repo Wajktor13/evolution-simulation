@@ -1,13 +1,12 @@
 package agh.ics.oop;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
+import java.util.ListIterator;
 
 
 public class SimulationEngine implements IEngine{
     private final IWorldMap map;
-    private final ArrayList<Animal> animalsList = new ArrayList<>();
+    private ArrayList<Animal> animalsList = new ArrayList<>();
     private final int refreshTime;
     private final int geneLength;
 
@@ -22,33 +21,46 @@ public class SimulationEngine implements IEngine{
     }
 
     private void createAnimal(Vector2d position, int animalEnergy){
-        Animal newAnimal = new Animal(position, animalEnergy, this.geneLength);
+        Animal newAnimal = new Animal(position, animalEnergy, this.geneLength, map);
         animalsList.add(newAnimal);
         this.map.placeAnimal(newAnimal);
     }
 
-    private void moveAnimals(){
-        for (Animal animal : animalsList){
-            System.out.println(animal.getPosition());
-            animal.changeOrientation();
-            animal.moveAnimal();
-        }
-    }
-    @Override
-    public void run() {
-        // TODO
-        // change so that it works like in the instruction
-        // animals appear only on their initial spot
-        // maybe observers
-        for (int i = 0; i < geneLength; i++){
-            System.out.println(map.toString());
-            moveAnimals();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+    private void updateAnimals(int energyChange, int ageChange){
+        ListIterator<Animal> iter = animalsList.listIterator();
+
+        while (iter.hasNext()){
+            Animal animal = iter.next();
+
+            animal.changeEnergy(energyChange);
+
+            if (animal.getEnergy() < 0){
+                this.map.removeAnimalFromPosition(animal, animal.getPosition());
+                iter.remove();
+            } else {
+                animal.changeAge(ageChange);
+                animal.changeOrientation();
+                animal.moveAnimal();
             }
         }
-        //Delete dead animals -> move animals -> eat plants -> reproduction -> grow plants
+    }
+
+    @Override
+    public void run() {
+        try {
+            for (int i = 0; true; i++){
+                Thread.sleep(this.refreshTime);
+                System.out.println(map);
+
+                this.updateAnimals(-1, 1);
+
+                if (animalsList.size() == 0){
+                    System.out.println(map);
+                    break;
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

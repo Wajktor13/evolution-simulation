@@ -1,5 +1,6 @@
 package agh.ics.oop;
 
+import java.util.PriorityQueue;
 import java.util.TreeSet;
 
 
@@ -58,7 +59,7 @@ public interface IWorldMap {
      *            The position of the animals.
      * @return TreeSet of the animals occupying the given position.
      */
-    TreeSet<Animal> animalsAt(Vector2d position);
+    PriorityQueue<Animal> animalsAt(Vector2d position);
 
     /**
      * Returns plant at the given position.
@@ -75,7 +76,7 @@ public interface IWorldMap {
      * @param animal
      *            Animal to be normalized
      */
-    void normalizeAnimalState(Animal animal, Vector2d newPosition);
+    void normalizeAnimalState(Animal animal, Vector2d oldPosition);
 
     /**
      * Removes the animal from the given positiob
@@ -83,7 +84,7 @@ public interface IWorldMap {
      * @param animal
      *            Animal to be removed
      */
-    void removeAnimal(Animal animal);
+    void removeAnimalFromPosition(Animal animal, Vector2d oldPosition);
 
     Vector2d getLowerLeft();
 
