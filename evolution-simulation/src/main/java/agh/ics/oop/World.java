@@ -9,7 +9,7 @@ public class World {
         int mapWidth = 10;
         int mapType = 0;
 
-        int plantsStartCount = 3;
+        int plantsStartCount = 20;
         int plantEnergy = 10;
         int plantsDailyGrowCount = 3;
         int plantsGrowType = 0;
@@ -25,9 +25,11 @@ public class World {
         int mutationType = 0;
         int geneLength = 6;
 
+        int equatorHeight = Math.floorDiv(mapHeight, 3);
+
         int refreshTime = 1500;
 
-        EquatorPlantsSpawner plantsSpawner = new EquatorPlantsSpawner();
+        EquatorPlantsSpawner plantsSpawner = new EquatorPlantsSpawner(mapWidth, equatorHeight);
         SphericalWorldMap map = new SphericalWorldMap(mapWidth, mapHeight, plantsSpawner);
         map.placePlants(plantsStartCount, plantEnergy);
         Vector2d[] initialPositions = {new Vector2d(5, 5), new Vector2d(4, 5), new Vector2d(3, 2), new Vector2d(5, 6),

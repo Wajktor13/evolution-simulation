@@ -8,9 +8,9 @@ public class EquatorPlantsSpawner implements IPlantsSpawner {
     private int centerY;
     private Random random = new Random();
 
-    public EquatorPlantsSpawner(Vector2d lowerLeft, Vector2d upperRight, int equatorHeight) {
+    public EquatorPlantsSpawner(int width, int equatorHeight) {
         this.radiusY = Math.floorDiv(equatorHeight, 2);
-        this.centerY = Math.floorDiv(upperRight.y - lowerLeft.y, 2);
+        this.centerY = Math.floorDiv(width , 2);
     }
 
     @Override

@@ -1,10 +1,6 @@
 package agh.ics.oop;
 
-import java.util.Random;
-
-
 public class SphericalWorldMap extends AbstractWorldMap{
-    private Random plantRandom = new Random();
     public MapVisualizer sphericalMapVisualizer;
 
 
@@ -33,15 +29,6 @@ public class SphericalWorldMap extends AbstractWorldMap{
      needs to be changed
      plants spawning logic should be in a class that implements IPlantsSpawner
      */
-    public void placePlants(int plantsStartCount, int plantEnergy){
-        for (int i = 0; i < plantsStartCount; i++){
-            Vector2d newPosition = new Vector2d(plantRandom.nextInt(this.getLowerLeft().x, this.getUpperRight().x), plantRandom.nextInt(this.getLowerLeft().y, this.getUpperRight().y));
-            Plant toPlace = new Plant(newPosition, plantEnergy);
-            if (!isOccupied(newPosition)){
-                placePlant(toPlace);
-            }
-        }
-    }
 
     @Override
     public boolean animalCanMoveTo(Vector2d position) {
