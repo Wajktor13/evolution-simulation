@@ -9,7 +9,7 @@ public interface IPlantsSpawner {
      *
      * @param freePositions
      *            Currently available positions
-     * @return position for a new plant or null if
+     * @return position for a new plant or null
      * if there are no free positions.
      */
 

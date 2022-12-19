@@ -42,6 +42,24 @@ public interface IWorldMap {
     void placePlant(Plant plant);
 
     /**
+     * Remove plant from the map.
+     *
+     * @param plant
+     *            Plant to be removed.
+     */
+     void removePlant(Plant plant);
+
+    /**
+     * Place numberOfPlantsToGrow plants one the map.
+     *
+     * @param numberOfPlantsToGrow
+     *            ...
+     * @param plantEnergy
+     *          ...
+     */
+    void growPlants(int numberOfPlantsToGrow, int plantEnergy);
+
+    /**
      * Returns object at the given position.
      *
      * @param position
@@ -86,7 +104,16 @@ public interface IWorldMap {
      */
     void removeAnimalFromPosition(Animal animal, Vector2d oldPosition);
 
+    /**
+     * For each position: eat plants, then reproduce
+     */
+    void updateFields();
+
     Vector2d getLowerLeft();
 
     Vector2d getUpperRight();
+
+    int getPlantsDailyGrow();
+
+    int getPlantsGrowEnergy();
 }

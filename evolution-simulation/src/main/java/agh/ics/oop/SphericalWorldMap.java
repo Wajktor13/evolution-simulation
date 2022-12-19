@@ -1,19 +1,20 @@
 package agh.ics.oop;
 
-public class SphericalWorldMap extends AbstractWorldMap{
+public class SphericalWorldMap extends AbstractWorldMap {
     public MapVisualizer sphericalMapVisualizer;
 
 
-    public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner){
-        super(width, height, plantsSpawner);
+    public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int plantsDailyGrow,
+                             int plantsEnergy) {
+        super(width, height, plantsSpawner, plantsDailyGrow, plantsEnergy);
         sphericalMapVisualizer = new MapVisualizer(this);
     }
 
     @Override
-    public void normalizeAnimalState(Animal animal, Vector2d oldPosition){
+    public void normalizeAnimalState(Animal animal, Vector2d oldPosition) {
         Vector2d newPosition = animal.getPosition();
 
-        if (!this.animalCanMoveTo(newPosition)){
+        if (!this.animalCanMoveTo(newPosition)) {
             animal.setPosition(oldPosition);
             animal.setOrientation(animal.getOrientation().oppositeDirection());
 
@@ -24,11 +25,6 @@ public class SphericalWorldMap extends AbstractWorldMap{
             animal.setPosition(new Vector2d(this.getLowerLeft().x, newPosition.getY()));
         }
     }
-
-    /*
-     needs to be changed
-     plants spawning logic should be in a class that implements IPlantsSpawner
-     */
 
     @Override
     public boolean animalCanMoveTo(Vector2d position) {
