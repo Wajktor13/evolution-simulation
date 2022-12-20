@@ -27,7 +27,7 @@ public class SimulationEngine implements IEngine {
         this.map.placeAnimal(newAnimal);
     }
 
-    private void updateAnimalsPositionsAndOrientations(int energyChange, int ageChange) {
+    private void updateAnimals(int energyChange, int ageChange) {
         ListIterator<Animal> iter = animalsList.listIterator();
 
         while (iter.hasNext()) {
@@ -61,7 +61,7 @@ public class SimulationEngine implements IEngine {
                 Thread.sleep(this.refreshTime);
                 System.out.println(map);
 
-                this.updateAnimalsPositionsAndOrientations(-1, 1);
+                this.updateAnimals(-1, 1);
                 this.eatPlantsAndReproduce();
                 this.growPlants();
 
