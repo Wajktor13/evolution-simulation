@@ -5,8 +5,8 @@ public class SphericalWorldMap extends AbstractWorldMap {
 
 
     public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int plantsDailyGrow,
-                             int plantsEnergy) {
-        super(width, height, plantsSpawner, plantsDailyGrow, plantsEnergy);
+                             int plantsEnergy, int animalReadyForReproductionEnergy, int animalReproductionLostEnergy) {
+        super(width, height, plantsSpawner, plantsDailyGrow, plantsEnergy, animalReadyForReproductionEnergy, animalReproductionLostEnergy);
         sphericalMapVisualizer = new MapVisualizer(this);
     }
 

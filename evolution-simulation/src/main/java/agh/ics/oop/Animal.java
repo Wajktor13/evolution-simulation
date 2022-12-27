@@ -9,15 +9,22 @@ public class Animal extends AbstractWorldMapElement {
     private MapDirection orientation;
     private int age = 0;
     private int childCounter = 0;
-    public Gene animalGene;
+    public IGene animalGene;
     private final ArrayList<IPositionChangeObserver> observers = new ArrayList<>();
     private IWorldMap map;
 
 
     public Animal(Vector2d position, int energy, int length, IWorldMap map) {
         super(position, energy);
-        this.animalGene = new Gene(length);
+        this.animalGene = new RandomGene(length);
         this.orientation = MapDirection.toMapDirection(animalGene.getNextOrientation());
+        this.map = map;
+        this.observers.add((IPositionChangeObserver) map);
+    }
+
+    public Animal(Vector2d position, int energy, IGene childGene, IWorldMap map){
+        super(position, energy);
+        this.animalGene = childGene;
         this.map = map;
         this.observers.add((IPositionChangeObserver) map);
     }
@@ -61,6 +68,10 @@ public class Animal extends AbstractWorldMapElement {
         this.age += diff;
     }
 
+    public void updateChildCounter(int diff){
+        this.childCounter += diff;
+    }
+
     public MapDirection getOrientation() {
         return this.orientation;
     }
@@ -71,6 +82,10 @@ public class Animal extends AbstractWorldMapElement {
 
     public int getChildCounter() {
         return this.childCounter;
+    }
+
+    public IGene getAnimalGene() {
+        return animalGene;
     }
 
     public void changeOrientation() {

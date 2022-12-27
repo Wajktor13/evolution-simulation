@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import com.sun.tools.jconsole.JConsoleContext;
+
 import java.util.*;
 
 
@@ -16,16 +18,20 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     private ArrayList<Vector2d> freePositionsForPlants = new ArrayList<Vector2d>();
     private int plantsDailyGrow;
     private int plantsGrowEnergy;
+    private final int animalReadyForReproductionEnergy;
+    private final int animalReproductionLostEnergy;
 
 
     protected AbstractWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int plantsDailyGrow,
-                               int plantsEnergy) {
+                               int plantsEnergy, int animalReadyForReproductionEnergy, int animalReproductionLostEnergy) {
         this.width = width;
         this.height = height;
         this.upperRight = new Vector2d(width - 1, height - 1);
         this.plantsSpawner = plantsSpawner;
         this.plantsDailyGrow = plantsDailyGrow;
         this.plantsGrowEnergy = plantsEnergy;
+        this.animalReadyForReproductionEnergy = animalReadyForReproductionEnergy;
+        this.animalReproductionLostEnergy = animalReproductionLostEnergy;
         generateFreePositions();
     }
 
@@ -187,6 +193,29 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                     /*
                         beta exists, perform reproduction
                      */
+                    if (alfa.getEnergy() >= animalReadyForReproductionEnergy && beta.getEnergy() >= animalReadyForReproductionEnergy){
+                        IGene alfaGene = alfa.getAnimalGene();
+                        IGene betaGene = beta.getAnimalGene();
+
+                        // take energy from alfa and beta
+                        alfa.changeEnergy(-animalReproductionLostEnergy);
+                        beta.changeEnergy(-animalReproductionLostEnergy);
+
+                        // update their child counts
+                        alfa.updateChildCounter(1);
+                        beta.updateChildCounter(1);
+
+                        // create the child on the same position but with animalReproductionLostEnergy * 2 (because it's taken from both parents)
+                        Animal childAnimal = new Animal(position, animalReproductionLostEnergy * 2, new RandomGene(alfa, beta), this);
+                        // update childAnimal min and max mutation count
+                        // and then mutate it's Gene
+                        childAnimal.getAnimalGene().updateMutationCount(alfaGene.getMinMutationCount(), alfaGene.getMaxMutationCount());
+                        childAnimal.getAnimalGene().mutateGene();
+
+
+                        animalsAtPosition.add(childAnimal);
+                    }
+
                 }
 
                 animalsAtPosition.add(alfa);

@@ -10,11 +10,16 @@ public class SimulationEngine implements IEngine {
     private final int refreshTime;
     private final int geneLength;
 
+    private final int minMutationCount;
+    private final int maxMutationCount;
+
     public SimulationEngine(IWorldMap map, Vector2d[] initialPositions, int refreshTime, int animalEnergy,
-                            int geneLength) {
+                            int geneLength, int minMutationCount, int maxMutationCount) {
         this.map = map;
         this.refreshTime = refreshTime;
         this.geneLength = geneLength;
+        this.minMutationCount = minMutationCount;
+        this.maxMutationCount = maxMutationCount;
 
         for (Vector2d position : initialPositions) {
             createAnimal(position, animalEnergy);
@@ -23,6 +28,7 @@ public class SimulationEngine implements IEngine {
 
     private void createAnimal(Vector2d position, int animalEnergy) {
         Animal newAnimal = new Animal(position, animalEnergy, this.geneLength, map);
+        newAnimal.getAnimalGene().updateMutationCount(this.minMutationCount, this.maxMutationCount);
         animalsList.add(newAnimal);
         this.map.placeAnimal(newAnimal);
     }
@@ -35,7 +41,7 @@ public class SimulationEngine implements IEngine {
 
             animal.changeEnergy(energyChange);
 
-            if (animal.getEnergy() < 0) {
+            if (animal.getEnergy() <= 0) {
                 this.map.removeAnimalFromPosition(animal, animal.getPosition());
                 iter.remove();
             } else {
