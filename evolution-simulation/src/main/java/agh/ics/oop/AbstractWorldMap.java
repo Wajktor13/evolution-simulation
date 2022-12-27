@@ -1,7 +1,5 @@
 package agh.ics.oop;
 
-import com.sun.tools.jconsole.JConsoleContext;
-
 import java.util.*;
 
 
@@ -161,7 +159,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
     @Override
-    public void updateFields() {
+    public ArrayList<Animal> updateFields() {
+        ArrayList<Animal> animalsBorn = new ArrayList<>();
         for (Map.Entry<Vector2d, PriorityQueue<Animal>> entry : this.animalsHashMap.entrySet()){
             Vector2d position = entry.getKey();
             PriorityQueue<Animal> animalsAtPosition = entry.getValue();
@@ -212,8 +211,10 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                         childAnimal.getAnimalGene().updateMutationCount(alfaGene.getMinMutationCount(), alfaGene.getMaxMutationCount());
                         childAnimal.getAnimalGene().mutateGene();
 
-
+                        placeAnimal(childAnimal);
                         animalsAtPosition.add(childAnimal);
+
+                        animalsBorn.add(childAnimal);
                     }
 
                 }
@@ -226,5 +227,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
             }
         }
+        return animalsBorn;
     }
 }

@@ -25,6 +25,7 @@ public class Animal extends AbstractWorldMapElement {
     public Animal(Vector2d position, int energy, IGene childGene, IWorldMap map){
         super(position, energy);
         this.animalGene = childGene;
+        this.orientation = MapDirection.toMapDirection(animalGene.getNextOrientation());
         this.map = map;
         this.observers.add((IPositionChangeObserver) map);
     }

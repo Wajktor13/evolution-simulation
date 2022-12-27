@@ -1,7 +1,8 @@
 package agh.ics.oop;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
-import java.util.TreeSet;
 
 
 public interface IWorldMap {
@@ -107,7 +108,7 @@ public interface IWorldMap {
     /**
      * For each position: eat plants, then reproduce
      */
-    void updateFields();
+    ArrayList<Animal> updateFields();
 
     Vector2d getLowerLeft();
 
