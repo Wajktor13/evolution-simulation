@@ -1,5 +1,7 @@
 package agh.ics.oop;
 
+import agh.ics.oop.enums.MapDirection;
+
 import java.util.ArrayList;
 import java.util.Random;
 

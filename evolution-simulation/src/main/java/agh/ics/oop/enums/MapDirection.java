@@ -1,6 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.enums;
 
-enum MapDirection{
+public enum MapDirection{
     NORTH,
     NORTHEAST,
     EAST,
@@ -24,7 +24,6 @@ enum MapDirection{
     }
 
     public static MapDirection toMapDirection(int orientation) {
-        System.out.println(orientation);
         return switch (orientation) {
             case 0 -> NORTH;
             case 1 -> NORTHEAST ;
