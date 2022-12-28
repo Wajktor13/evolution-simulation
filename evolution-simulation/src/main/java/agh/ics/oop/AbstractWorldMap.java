@@ -212,7 +212,6 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                         childAnimal.getAnimalGene().mutateGene();
 
                         placeAnimal(childAnimal);
-                        animalsAtPosition.add(childAnimal);
 
                         animalsBorn.add(childAnimal);
                     }

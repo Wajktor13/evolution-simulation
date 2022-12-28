@@ -7,7 +7,6 @@ import java.util.ListIterator;
 public class SimulationEngine implements IEngine {
     private final IWorldMap map;
     private ArrayList<Animal> animalsList = new ArrayList<>();
-    private ArrayList<Animal> animalsBorn = new ArrayList<>();
     private final int refreshTime;
     private final int geneLength;
 
@@ -34,15 +33,15 @@ public class SimulationEngine implements IEngine {
         this.map.placeAnimal(newAnimal);
     }
 
-    private void updateAnimalsPositionsAndOrientations(int energyChange, int ageChange) {
+    private void updateAnimals(int energyChange, int ageChange) {
         ListIterator<Animal> iter = animalsList.listIterator();
 
         while (iter.hasNext()) {
             Animal animal = iter.next();
 
             animal.changeEnergy(energyChange);
+            if (animal.getEnergy() < 0) {
 
-            if (animal.getEnergy() <= 0) {
                 this.map.removeAnimalFromPosition(animal, animal.getPosition());
                 iter.remove();
             } else {
@@ -54,7 +53,8 @@ public class SimulationEngine implements IEngine {
     }
 
     private void eatPlantsAndReproduce(){
-        animalsBorn = this.map.updateFields();
+        ArrayList<Animal> animalsBorn = this.map.updateFields();
+        this.animalsList.addAll(animalsBorn);
     }
 
     private void growPlants(){
@@ -68,19 +68,13 @@ public class SimulationEngine implements IEngine {
                 Thread.sleep(this.refreshTime);
                 System.out.println(map);
 
-                this.updateAnimalsPositionsAndOrientations(-1, 1);
+                this.updateAnimals(-1, 1);
                 this.eatPlantsAndReproduce();
                 this.growPlants();
 
                 if (animalsList.size() == 0) {
                     System.out.println(map);
                     break;
-                }
-                if (animalsBorn.size() > 0){
-                    for (Animal newAnimal: animalsBorn){
-                        animalsList.add(newAnimal);
-                    }
-                    animalsBorn.clear();
                 }
             }
         } catch (InterruptedException e) {

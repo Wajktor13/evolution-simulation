@@ -24,6 +24,7 @@ enum MapDirection{
     }
 
     public static MapDirection toMapDirection(int orientation) {
+        System.out.println(orientation);
         return switch (orientation) {
             case 0 -> NORTH;
             case 1 -> NORTHEAST ;
