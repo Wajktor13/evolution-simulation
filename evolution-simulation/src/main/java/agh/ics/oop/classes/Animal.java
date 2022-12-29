@@ -10,28 +10,32 @@ import java.util.Random;
 
 
 public class Animal extends AbstractWorldMapElement {
-    private Random animalRandom = new Random();
     private MapDirection orientation;
     private int age = 0;
     private int childCounter = 0;
     public IGene animalGene;
     private final ArrayList<IPositionChangeObserver> observers = new ArrayList<>();
-    private IWorldMap map;
+    private final IWorldMap map;
+    public int maxEnergy;
 
 
-    public Animal(Vector2d position, int energy, int length, IWorldMap map) {
+    public Animal(Vector2d position, int energy, int length, IWorldMap map, int maxEnergy) {
         super(position, energy);
         this.animalGene = new RandomGene(length);
         this.orientation = MapDirection.toMapDirection(animalGene.getNextOrientation());
         this.map = map;
+        this.maxEnergy = maxEnergy;
+
         this.observers.add((IPositionChangeObserver) map);
     }
 
-    public Animal(Vector2d position, int energy, IGene childGene, IWorldMap map){
+    public Animal(Vector2d position, int energy, IGene childGene, IWorldMap map, int maxEnergy){
         super(position, energy);
         this.animalGene = childGene;
         this.orientation = MapDirection.toMapDirection(animalGene.getNextOrientation());
         this.map = map;
+        this.maxEnergy = maxEnergy;
+
         this.observers.add((IPositionChangeObserver) map);
     }
 
@@ -151,6 +155,12 @@ public class Animal extends AbstractWorldMapElement {
 
     @Override
     public String getImageUrl() {
-        return "evolution-simulation/src/main/resources/animal.png";
+        if (this.energy < this.maxEnergy * 0.25){
+            return "src/main/resources/animal_low_hp.png";
+        } else if (this.energy < this.maxEnergy * 0.75){
+            return "src/main/resources/animal_half_hp.png";
+        } else {
+            return "src/main/resources/animal_full_hp.png";
+        }
     }
 }

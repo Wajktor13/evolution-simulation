@@ -17,14 +17,12 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
-import java.util.Date;
-
 
 public class App extends Application {
-    private static final int settingsSceneWidth = 450;
-    private static final int settingsSceneHeight = 700;
-    private static final int simulationSceneWidth = 1000;
-    private static final int simulationSceneHeight = 600;
+    private static final int settingsSceneWidth = 475;
+    private static final int settingsSceneHeight = 725;
+    private static final int simulationSceneWidth = 725;
+    private static final int simulationSceneHeight = 725;
     private Scene settingsScene;
 
     @Override
@@ -203,6 +201,7 @@ public class App extends Application {
         IWorldMap newMap;
         IPlantsSpawner newPlantsSpawner;
         GridPane newGrid;
+        Stage newSimulationStage = new Stage();
 
         if (newSimulationParameters.plantsGrowVariant == PlantsGrowVariant.PREFER_EQUATOR){
             newPlantsSpawner = new EquatorPlantsSpawner(newSimulationParameters.mapHeight,
@@ -232,7 +231,7 @@ public class App extends Application {
                     newSimulationParameters.reproductionEnergyLoss);
         }
 
-        newGrid = this.createNewSimulationWindow(newMap);
+        newGrid = this.createNewSimulationWindow(newMap, newSimulationStage);
         newGrid.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
 
         SimulationEngine newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
@@ -241,25 +240,27 @@ public class App extends Application {
                 newSimulationParameters.maxMutations, newGrid);
 
         Thread newEngineThread = new Thread(newSimulationEngine);
+        newSimulationStage.setOnHiding( event ->  {newEngineThread.stop();});
+
         newEngineThread.start();
     }
 
-    private GridPane createNewSimulationWindow(IWorldMap map){
-        Vector2d lowerLeft = map.getLowerLeft();
-        Vector2d upperRight = map.getUpperRight();
+    private GridPane createNewSimulationWindow(IWorldMap newMap, Stage newSimulationStage){
+        Vector2d lowerLeft = newMap.getLowerLeft();
+        Vector2d upperRight = newMap.getUpperRight();
         int rows = upperRight.getY() - lowerLeft.getY() + 1;
         int cols = upperRight.getX() - lowerLeft.getX() + 1;
         int cellSize = (int) Math.floor(Math.min(App.calculateCellSize(App.simulationSceneWidth, cols),
                 calculateCellSize(App.simulationSceneHeight, rows)));
 
-        Stage newSimulationStage = new Stage();
         newSimulationStage.getIcons().add(new Image("file:src/main/resources/animal.png"));
         newSimulationStage.setTitle("Evolution Simulation");
+
 
         GridPane newGrid = new GridPane();
         for (int i = 0; i < cols; i++) newGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         for (int i = 0; i < rows; i++) newGrid.getRowConstraints().add(new RowConstraints(cellSize));
-        renderGrid(newGrid, map);
+        renderGrid(newGrid, newMap);
 
         Scene newScene = new Scene(newGrid, App.simulationSceneWidth, App.simulationSceneHeight);
         newSimulationStage.setScene(newScene);

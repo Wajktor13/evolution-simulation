@@ -65,15 +65,15 @@ public class SimulationParameters {
 
     public static SimulationParameters getPredefinedParameters1(){
         return new SimulationParameters("10", "10", "Spherical Earth", "5",
-                "5", "3", "Prefer Equator", "10", "20",
-                "10", "3", "Full Predestination", "1",
-                "4", "Fully Randomized", "8", "400");
+                "5", "3", "Prefer Equator", "10", "25",
+                "10", "8", "Full Predestination", "1",
+                "4", "Fully Randomized", "8", "300");
     }
 
     public static SimulationParameters getPredefinedParameters2(){
         return new SimulationParameters("20", "20", "Spherical Earth", "10",
-                "10", "5", "Prefer Equator", "25", "25",
-                "5", "2", "Full Predestination", "2",
-                "6", "Fully Randomized", "10", "800");
+                "10", "5", "Prefer Equator", "15", "30",
+                "10", "6", "Full Predestination", "2",
+                "6", "Fully Randomized", "10", "600");
     }
 }

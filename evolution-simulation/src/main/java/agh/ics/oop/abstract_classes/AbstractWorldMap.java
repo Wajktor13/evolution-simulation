@@ -220,7 +220,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
                         beta.updateChildCounter(1);
 
                         // create the child on the same position but with animalReproductionLostEnergy * 2 (because it's taken from both parents)
-                        Animal childAnimal = new Animal(position, animalReproductionLostEnergy * 2, new RandomGene(alfa, beta), this);
+                        Animal childAnimal = new Animal(position, animalReproductionLostEnergy * 2,
+                                new RandomGene(alfa, beta), this, alfa.maxEnergy);
                         // update childAnimal min and max mutation count
                         // and then mutate it's Gene
                         childAnimal.getAnimalGene().updateMutationCount(alfaGene.getMinMutationCount(), alfaGene.getMaxMutationCount());

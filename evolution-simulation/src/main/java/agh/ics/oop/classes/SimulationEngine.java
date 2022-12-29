@@ -18,6 +18,7 @@ public class SimulationEngine implements Runnable {
     private final GridPane grid;
     private final int minMutationCount;
     private final int maxMutationCount;
+    private final int initialAnimalEnergy;
 
     public SimulationEngine(IWorldMap map, int refreshTime, int initialAnimals, int initialAnimalEnergy, int geneLength,
                             int minMutationCount, int maxMutationCount, GridPane grid) {
@@ -27,6 +28,7 @@ public class SimulationEngine implements Runnable {
         this.minMutationCount = minMutationCount;
         this.maxMutationCount = maxMutationCount;
         this.grid = grid;
+        this.initialAnimalEnergy = initialAnimalEnergy;
 
         createAndPlaceInitialAnimals(initialAnimals, initialAnimalEnergy);
     }
@@ -43,7 +45,7 @@ public class SimulationEngine implements Runnable {
     }
 
     private void createAndPlaceAnimal(Vector2d position, int animalEnergy) {
-        Animal newAnimal = new Animal(position, animalEnergy, this.geneLength, map);
+        Animal newAnimal = new Animal(position, animalEnergy, this.geneLength, map, this.initialAnimalEnergy);
         newAnimal.getAnimalGene().updateMutationCount(this.minMutationCount, this.maxMutationCount);
         animalsList.add(newAnimal);
         this.map.placeAnimal(newAnimal);

@@ -15,6 +15,6 @@ public class Plant extends AbstractWorldMapElement {
 
     @Override
     public String getImageUrl() {
-        return "evolution-simulation/src/main/resources/plant.png";
+        return "src/main/resources/plant.png";
     }
 }
