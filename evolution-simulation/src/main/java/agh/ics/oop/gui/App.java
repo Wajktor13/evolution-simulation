@@ -6,23 +6,25 @@ import agh.ics.oop.enums.PlantsGrowVariant;
 import agh.ics.oop.interfaces.IPlantsSpawner;
 import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Application;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 import javafx.scene.control.*;
+
+import java.util.Date;
 
 
 public class App extends Application {
-    private final int settingsSceneWidth = 450;
-    private final int settingsSceneHeight = 700;
-    private final int simulationSceneWidth = 1000;
-    private final int simulationSceneHeight = 600;
+    private static final int settingsSceneWidth = 450;
+    private static final int settingsSceneHeight = 700;
+    private static final int simulationSceneWidth = 1000;
+    private static final int simulationSceneHeight = 600;
     private Scene settingsScene;
 
     @Override
@@ -30,6 +32,7 @@ public class App extends Application {
         createSettingsScene();
         settingsStage.setScene(settingsScene);
         settingsStage.setTitle("Evolution Simulation Settings");
+        settingsStage.getIcons().add(new Image("file:src/main/resources/settings.png"));
         settingsStage.show();
     }
 
@@ -84,66 +87,67 @@ public class App extends Application {
 
         Button startButton = new Button("START SIMULATION");
 
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
+        GridPane settingsGrid = new GridPane();
+        settingsGrid.setAlignment(Pos.CENTER);
+        settingsGrid.setHgap(10);
+        settingsGrid.setVgap(10);
+        settingsGrid.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        grid.add(new Label("PREDEFINED SETTINGS"),0,0);
-        grid.add(loadPredefinedSettingsInput,1,0);
+        settingsGrid.add(new Label("PREDEFINED SETTINGS"),0,0);
+        settingsGrid.add(loadPredefinedSettingsInput,1,0);
 
-        grid.add(new Label("MAP WIDTH"),0,1);
-        grid.add(mapWidthInput,1,1);
+        settingsGrid.add(new Label("MAP WIDTH"),0,1);
+        settingsGrid.add(mapWidthInput,1,1);
 
-        grid.add(new Label("MAP HEIGHT"),0,2);
-        grid.add(mapHeightInput,1,2);
+        settingsGrid.add(new Label("MAP HEIGHT"),0,2);
+        settingsGrid.add(mapHeightInput,1,2);
 
-        grid.add(new Label("MAP VARIANT"), 0,3);
-        grid.add(mapVariantInput,1,3);
+        settingsGrid.add(new Label("MAP VARIANT"), 0,3);
+        settingsGrid.add(mapVariantInput,1,3);
 
-        grid.add(new Label("INITIAL PLANTS"), 0,4);
-        grid.add(initialPlantsInput,1,4);
+        settingsGrid.add(new Label("INITIAL PLANTS"), 0,4);
+        settingsGrid.add(initialPlantsInput,1,4);
 
-        grid.add(new Label("PLANTS ENERGY"), 0,5);
-        grid.add(plantsEnergyInput,1,5);
+        settingsGrid.add(new Label("PLANTS ENERGY"), 0,5);
+        settingsGrid.add(plantsEnergyInput,1,5);
 
-        grid.add(new Label("DAILY PLANTS GROW"), 0,6);
-        grid.add(dailyPlantsGrowInput,1,6);
+        settingsGrid.add(new Label("DAILY PLANTS GROW"), 0,6);
+        settingsGrid.add(dailyPlantsGrowInput,1,6);
 
-        grid.add(new Label("PLANTS GROW VARIANT"), 0,7);
-        grid.add(plantsGrowVariantInput,1,7);
+        settingsGrid.add(new Label("PLANTS GROW VARIANT"), 0,7);
+        settingsGrid.add(plantsGrowVariantInput,1,7);
 
-        grid.add(new Label("INITIAL ANIMALS"), 0,8);
-        grid.add(initialAnimalsInput,1,8);
+        settingsGrid.add(new Label("INITIAL ANIMALS"), 0,8);
+        settingsGrid.add(initialAnimalsInput,1,8);
 
-        grid.add(new Label("INITIAL ANIMALS ENERGY"), 0,9);
-        grid.add(initialAnimalsEnergyInput,1,9);
+        settingsGrid.add(new Label("INITIAL ANIMALS ENERGY"), 0,9);
+        settingsGrid.add(initialAnimalsEnergyInput,1,9);
 
-        grid.add(new Label("ENERGY REQUIRED TO REPRODUCE"), 0,10);
-        grid.add(energyRequiredToReproduceInput,1,10);
+        settingsGrid.add(new Label("ENERGY REQUIRED TO REPRODUCE"), 0,10);
+        settingsGrid.add(energyRequiredToReproduceInput,1,10);
 
-        grid.add(new Label("REPRODUCTION ENERGY LOSS"), 0,11);
-        grid.add(reproductionEnergyLossInput,1,11);
+        settingsGrid.add(new Label("REPRODUCTION ENERGY LOSS"), 0,11);
+        settingsGrid.add(reproductionEnergyLossInput,1,11);
 
-        grid.add(new Label("ANIMALS MOVE VARIANT"), 0,12);
-        grid.add(animalsMoveVariantInput,1,12);
+        settingsGrid.add(new Label("ANIMALS MOVE VARIANT"), 0,12);
+        settingsGrid.add(animalsMoveVariantInput,1,12);
 
-        grid.add(new Label("MIN MUTATIONS"), 0,13);
-        grid.add(minMutationsInput,1,13);
+        settingsGrid.add(new Label("MIN MUTATIONS"), 0,13);
+        settingsGrid.add(minMutationsInput,1,13);
 
-        grid.add(new Label("MAX MUTATIONS"), 0,14);
-        grid.add(maxMutationsInput,1,14);
+        settingsGrid.add(new Label("MAX MUTATIONS"), 0,14);
+        settingsGrid.add(maxMutationsInput,1,14);
 
-        grid.add(new Label("GENE LENGTH"), 0,15);
-        grid.add(geneLengthInput,1,15);
+        settingsGrid.add(new Label("GENE LENGTH"), 0,15);
+        settingsGrid.add(geneLengthInput,1,15);
 
-        grid.add(new Label("MUTATIONS VARIANT"), 0,16);
-        grid.add(mutationsVariantInput,1,16);
+        settingsGrid.add(new Label("MUTATIONS VARIANT"), 0,16);
+        settingsGrid.add(mutationsVariantInput,1,16);
 
-        grid.add(new Label("DAY DURATION (ms)"), 0,17);
-        grid.add(dayDurationInput,1,17);
+        settingsGrid.add(new Label("DAY DURATION (ms)"), 0,17);
+        settingsGrid.add(dayDurationInput,1,17);
 
-        grid.add(startButton,0,18,2,2);
+        settingsGrid.add(startButton,0,18,2,2);
         GridPane.setHalignment(startButton, HPos.CENTER);
         GridPane.setValignment(startButton, VPos.CENTER);
 
@@ -192,7 +196,7 @@ public class App extends Application {
             this.createAndRunNewSimulation(newSimulationParameters);
         });
 
-        settingsScene = new Scene(grid, this.settingsSceneWidth, this.settingsSceneHeight);
+        settingsScene = new Scene(settingsGrid, App.settingsSceneWidth, App.settingsSceneHeight);
     }
 
     private void createAndRunNewSimulation(SimulationParameters newSimulationParameters){
@@ -229,6 +233,7 @@ public class App extends Application {
         }
 
         newGrid = this.createNewSimulationWindow(newMap);
+        newGrid.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
 
         SimulationEngine newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
                 newSimulationParameters.initialAnimals, newSimulationParameters.initialAnimalEnergy,
@@ -240,11 +245,23 @@ public class App extends Application {
     }
 
     private GridPane createNewSimulationWindow(IWorldMap map){
+        Vector2d lowerLeft = map.getLowerLeft();
+        Vector2d upperRight = map.getUpperRight();
+        int rows = upperRight.getY() - lowerLeft.getY() + 1;
+        int cols = upperRight.getX() - lowerLeft.getX() + 1;
+        int cellSize = (int) Math.floor(Math.min(App.calculateCellSize(App.simulationSceneWidth, cols),
+                calculateCellSize(App.simulationSceneHeight, rows)));
+
         Stage newSimulationStage = new Stage();
+        newSimulationStage.getIcons().add(new Image("file:src/main/resources/animal.png"));
         newSimulationStage.setTitle("Evolution Simulation");
+
         GridPane newGrid = new GridPane();
+        for (int i = 0; i < cols; i++) newGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
+        for (int i = 0; i < rows; i++) newGrid.getRowConstraints().add(new RowConstraints(cellSize));
         renderGrid(newGrid, map);
-        Scene newScene = new Scene(newGrid, this.simulationSceneWidth, this.simulationSceneHeight);
+
+        Scene newScene = new Scene(newGrid, App.simulationSceneWidth, App.simulationSceneHeight);
         newSimulationStage.setScene(newScene);
         newSimulationStage.show();
 
@@ -252,23 +269,20 @@ public class App extends Application {
     }
 
     public static void renderGrid(GridPane grid, IWorldMap map){
-        grid.getChildren().clear();
-
         Vector2d lowerLeft = map.getLowerLeft();
         Vector2d upperRight = map.getUpperRight();
         int rows = upperRight.getY() - lowerLeft.getY() + 1;
         int cols = upperRight.getX() - lowerLeft.getX() + 1;
-        int cellSize = 50;
+        int cellSize = (int) Math.floor(Math.min(App.calculateCellSize(App.simulationSceneWidth, cols),
+                calculateCellSize(App.simulationSceneHeight, rows)));
 
+        grid.getChildren().clear();
 
-        for (int i = 0; i < cols; i++) grid.getColumnConstraints().add(new ColumnConstraints(cellSize));
-        for (int i = 0; i < rows; i++) grid.getRowConstraints().add(new RowConstraints(cellSize));
-
-        addMapObjectsToGrid(grid, map, rows, lowerLeft.getY(), cols, lowerLeft.getX(), cellSize);
+        App.addMapObjectsToGrid(grid, map, rows, lowerLeft.getY(), cols, lowerLeft.getX(), cellSize);
     }
 
-    private static void addMapObjectsToGrid(GridPane grid, IWorldMap map, int rows, int rowsStart, int cols, int colsStart,
-                                     int cellSize){
+    private static void addMapObjectsToGrid(GridPane grid, IWorldMap map, int rows, int rowsStart, int cols,
+                                            int colsStart, int cellSize){
         VBox box;
         for (int x = 0; x < cols; x++){
             for (int y = 0; y < rows; y++){
@@ -282,4 +296,7 @@ public class App extends Application {
         }
     }
 
+    private static double calculateCellSize(int availableLength, int numberOfCells){
+        return (availableLength) / numberOfCells;
+    }
 }

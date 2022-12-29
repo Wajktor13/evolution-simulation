@@ -79,25 +79,22 @@ public class SimulationEngine implements Runnable {
 
     @Override
     public void run() {
-        try {
-            for (int i = 0; true; i++) {
+        do {
+            try {
                 Thread.sleep(this.refreshTime);
-
-                this.updateAnimals(-1, 1);
-                this.eatPlantsAndReproduce();
-                this.growPlants();
-
-                Platform.runLater(() -> {
-                    App.renderGrid(this.grid, this.map);
-                });
-
-
-                if (animalsList.size() == 0) {
-                    break;
-                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+
+            this.updateAnimals(-1, 1);
+            this.eatPlantsAndReproduce();
+            this.growPlants();
+
+            Platform.runLater(() -> {
+                App.renderGrid(this.grid, this.map);
+            });
+
         }
+        while (animalsList.size() != 0);
     }
 }
