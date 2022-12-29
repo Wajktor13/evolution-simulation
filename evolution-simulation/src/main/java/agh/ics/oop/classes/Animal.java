@@ -151,6 +151,6 @@ public class Animal extends AbstractWorldMapElement {
 
     @Override
     public String getImageUrl() {
-        return "src/main/resources/animal.png";
+        return "evolution-simulation/src/main/resources/animal.png";
     }
 }

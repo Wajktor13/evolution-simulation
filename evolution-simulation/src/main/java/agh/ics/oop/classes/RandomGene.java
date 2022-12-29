@@ -18,11 +18,15 @@ public class RandomGene extends AbstractGene {
 
         while (mutationCount > 0){
             int toChange = r.nextInt(this.geneLength);
-            mutate[toChange] = (char) (r.nextInt(0, 8)  + '0');
+            char toAdd = (char) (r.nextInt(0, 8)  + '0');
+            mutate[toChange] = toAdd;
             mutationCount-=1;
         }
 
-        this.geneString = mutate.toString();
+        this.geneString = "";
+        for (char c : mutate){
+            this.geneString += c;
+        }
 
     }
 
