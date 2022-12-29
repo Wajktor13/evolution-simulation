@@ -1,9 +1,14 @@
 package agh.ics.oop.gui;
 
-import agh.ics.oop.*;
+import agh.ics.oop.classes.*;
 import agh.ics.oop.enums.MapVariant;
 import agh.ics.oop.enums.PlantsGrowVariant;
+import agh.ics.oop.interfaces.IPlantsSpawner;
+import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Application;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -24,6 +29,7 @@ public class App extends Application {
     public void start(Stage settingsStage){
         createSettingsScene();
         settingsStage.setScene(settingsScene);
+        settingsStage.setTitle("Evolution Simulation Settings");
         settingsStage.show();
     }
 
@@ -76,7 +82,7 @@ public class App extends Application {
 
         TextField dayDurationInput = new TextField();
 
-        Button startButton = new Button("START");
+        Button startButton = new Button("START SIMULATION");
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -192,6 +198,7 @@ public class App extends Application {
     private void createAndRunNewSimulation(SimulationParameters newSimulationParameters){
         IWorldMap newMap;
         IPlantsSpawner newPlantsSpawner;
+        GridPane newGrid;
 
         if (newSimulationParameters.plantsGrowVariant == PlantsGrowVariant.PREFER_EQUATOR){
             newPlantsSpawner = new EquatorPlantsSpawner(newSimulationParameters.mapHeight,
@@ -207,24 +214,72 @@ public class App extends Application {
 
         if (newSimulationParameters.mapVariant == MapVariant.SPHERICAL_EARTH){
             newMap = new SphericalWorldMap(newSimulationParameters.mapWidth, newSimulationParameters.mapHeight,
-                    newPlantsSpawner, newSimulationParameters.dailyPlantsGrow, newSimulationParameters.plantEnergy,
-                    newSimulationParameters.energyRequiredToReproduce, newSimulationParameters.reproductionEnergyLoss);
+                    newPlantsSpawner, newSimulationParameters.initialPlants, newSimulationParameters.dailyPlantsGrow,
+                    newSimulationParameters.plantEnergy, newSimulationParameters.energyRequiredToReproduce,
+                    newSimulationParameters.reproductionEnergyLoss);
         } else {
             /*
             another map variant
              */
 
             newMap = new SphericalWorldMap(newSimulationParameters.mapWidth, newSimulationParameters.mapHeight,
-                    newPlantsSpawner, newSimulationParameters.dailyPlantsGrow, newSimulationParameters.plantEnergy,
-                    newSimulationParameters.energyRequiredToReproduce, newSimulationParameters.reproductionEnergyLoss);
+                    newPlantsSpawner, newSimulationParameters.initialPlants, newSimulationParameters.dailyPlantsGrow,
+                    newSimulationParameters.plantEnergy, newSimulationParameters.energyRequiredToReproduce,
+                    newSimulationParameters.reproductionEnergyLoss);
         }
 
+        newGrid = this.createNewSimulationWindow(newMap);
 
         SimulationEngine newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
                 newSimulationParameters.initialAnimals, newSimulationParameters.initialAnimalEnergy,
                 newSimulationParameters.geneLength, newSimulationParameters.minMutations,
-                newSimulationParameters.maxMutations);
+                newSimulationParameters.maxMutations, newGrid);
 
-        newSimulationEngine.run();
+        Thread newEngineThread = new Thread(newSimulationEngine);
+        newEngineThread.start();
     }
+
+    private GridPane createNewSimulationWindow(IWorldMap map){
+        Stage newSimulationStage = new Stage();
+        newSimulationStage.setTitle("Evolution Simulation");
+        GridPane newGrid = new GridPane();
+        renderGrid(newGrid, map);
+        Scene newScene = new Scene(newGrid, this.simulationSceneWidth, this.simulationSceneHeight);
+        newSimulationStage.setScene(newScene);
+        newSimulationStage.show();
+
+        return newGrid;
+    }
+
+    public static void renderGrid(GridPane grid, IWorldMap map){
+        grid.getChildren().clear();
+
+        Vector2d lowerLeft = map.getLowerLeft();
+        Vector2d upperRight = map.getUpperRight();
+        int rows = upperRight.getY() - lowerLeft.getY() + 1;
+        int cols = upperRight.getX() - lowerLeft.getX() + 1;
+        int cellSize = 50;
+
+
+        for (int i = 0; i < cols; i++) grid.getColumnConstraints().add(new ColumnConstraints(cellSize));
+        for (int i = 0; i < rows; i++) grid.getRowConstraints().add(new RowConstraints(cellSize));
+
+        addMapObjectsToGrid(grid, map, rows, lowerLeft.getY(), cols, lowerLeft.getX(), cellSize);
+    }
+
+    private static void addMapObjectsToGrid(GridPane grid, IWorldMap map, int rows, int rowsStart, int cols, int colsStart,
+                                     int cellSize){
+        VBox box;
+        for (int x = 0; x < cols; x++){
+            for (int y = 0; y < rows; y++){
+                Object element = map.objectAt(new Vector2d(colsStart + x, rows + rowsStart - y - 1));
+                if (element != null){
+                    box = new GuiElementBox(cellSize, (IMapGuiElement) element).getBox();
+                    GridPane.setHalignment(box, HPos.CENTER);
+                    grid.add(box, x, y, 1, 1);
+                }
+            }
+        }
+    }
+
 }

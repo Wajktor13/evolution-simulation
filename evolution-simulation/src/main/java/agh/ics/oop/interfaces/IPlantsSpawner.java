@@ -1,4 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.interfaces;
+
+import agh.ics.oop.classes.Vector2d;
 
 import java.util.ArrayList;
 

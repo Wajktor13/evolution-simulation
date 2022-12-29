@@ -1,6 +1,9 @@
-package agh.ics.oop;
+package agh.ics.oop.abstract_classes;
 
-abstract class AbstractWorldMapElement {
+import agh.ics.oop.classes.Vector2d;
+import agh.ics.oop.gui.IMapGuiElement;
+
+public abstract class AbstractWorldMapElement  implements IMapGuiElement {
     protected int energy;
     protected Vector2d position;
     

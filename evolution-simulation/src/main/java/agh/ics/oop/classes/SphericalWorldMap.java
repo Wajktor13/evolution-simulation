@@ -1,12 +1,17 @@
-package agh.ics.oop;
+package agh.ics.oop.classes;
+
+import agh.ics.oop.abstract_classes.AbstractWorldMap;
+import agh.ics.oop.interfaces.IPlantsSpawner;
 
 public class SphericalWorldMap extends AbstractWorldMap {
     public MapVisualizer sphericalMapVisualizer;
 
 
-    public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int plantsDailyGrow,
-                             int plantsEnergy, int animalReadyForReproductionEnergy, int animalReproductionLostEnergy) {
-        super(width, height, plantsSpawner, plantsDailyGrow, plantsEnergy, animalReadyForReproductionEnergy, animalReproductionLostEnergy);
+    public SphericalWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int initialPlants,
+                             int plantsDailyGrow, int plantsEnergy, int animalReadyForReproductionEnergy,
+                             int animalReproductionLostEnergy) {
+        super(width, height, plantsSpawner, initialPlants, plantsDailyGrow, plantsEnergy,
+                animalReadyForReproductionEnergy, animalReproductionLostEnergy);
         sphericalMapVisualizer = new MapVisualizer(this);
     }
 

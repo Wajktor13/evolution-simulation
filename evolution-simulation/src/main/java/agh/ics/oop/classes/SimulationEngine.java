@@ -1,26 +1,32 @@
-package agh.ics.oop;
+package agh.ics.oop.classes;
+
+import agh.ics.oop.gui.App;
+import agh.ics.oop.interfaces.IWorldMap;
+import javafx.application.Platform;
+import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Random;
 
 
-public class SimulationEngine implements IEngine {
-    private final IWorldMap map;
+public class SimulationEngine implements Runnable {
+    public final IWorldMap map;
     private ArrayList<Animal> animalsList = new ArrayList<>();
     private final int refreshTime;
     private final int geneLength;
-
+    private final GridPane grid;
     private final int minMutationCount;
     private final int maxMutationCount;
 
     public SimulationEngine(IWorldMap map, int refreshTime, int initialAnimals, int initialAnimalEnergy, int geneLength,
-                            int minMutationCount, int maxMutationCount) {
+                            int minMutationCount, int maxMutationCount, GridPane grid) {
         this.map = map;
         this.refreshTime = refreshTime;
         this.geneLength = geneLength;
         this.minMutationCount = minMutationCount;
         this.maxMutationCount = maxMutationCount;
+        this.grid = grid;
 
         createAndPlaceInitialAnimals(initialAnimals, initialAnimalEnergy);
     }
@@ -32,7 +38,6 @@ public class SimulationEngine implements IEngine {
 
         for (int i = 0; i < initialAnimals; i++){
             position = freePositions.get(rand.nextInt(freePositions.size()));
-            freePositions.remove(position);
             this.createAndPlaceAnimal(position, initialAnimalEnergy);
         }
     }
@@ -77,14 +82,17 @@ public class SimulationEngine implements IEngine {
         try {
             for (int i = 0; true; i++) {
                 Thread.sleep(this.refreshTime);
-                System.out.println(map);
 
                 this.updateAnimals(-1, 1);
                 this.eatPlantsAndReproduce();
                 this.growPlants();
 
+                Platform.runLater(() -> {
+                    App.renderGrid(this.grid, this.map);
+                });
+
+
                 if (animalsList.size() == 0) {
-                    System.out.println(map);
                     break;
                 }
             }

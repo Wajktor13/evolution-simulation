@@ -1,4 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.classes;
+
+import agh.ics.oop.interfaces.IPlantsSpawner;
 
 import java.util.ArrayList;
 import java.util.Random;

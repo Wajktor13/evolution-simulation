@@ -1,4 +1,6 @@
-package agh.ics.oop;
+package agh.ics.oop.classes;
+
+import agh.ics.oop.abstract_classes.AbstractWorldMapElement;
 
 public class Plant extends AbstractWorldMapElement {
 
@@ -9,5 +11,10 @@ public class Plant extends AbstractWorldMapElement {
     @Override
     public String toString() {
         return " p";
+    }
+
+    @Override
+    public String getImageUrl() {
+        return "src/main/resources/plant.png";
     }
 }
