@@ -10,4 +10,10 @@ public enum PlantsGrowVariant {
         };
     }
 
+    @Override
+    public String toString() {
+        return switch (this) {
+            case PREFER_EQUATOR -> "Prefer Equator";
+        };
+    }
 }

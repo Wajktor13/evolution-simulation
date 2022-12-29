@@ -117,4 +117,6 @@ public interface IWorldMap {
     int getPlantsDailyGrow();
 
     int getPlantsGrowEnergy();
+
+    public ArrayList<Vector2d> generateFreePositions();
 }

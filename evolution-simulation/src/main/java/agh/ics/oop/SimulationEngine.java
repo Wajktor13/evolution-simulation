@@ -2,6 +2,7 @@ package agh.ics.oop;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Random;
 
 
 public class SimulationEngine implements IEngine {
@@ -13,20 +14,30 @@ public class SimulationEngine implements IEngine {
     private final int minMutationCount;
     private final int maxMutationCount;
 
-    public SimulationEngine(IWorldMap map, Vector2d[] initialPositions, int refreshTime, int animalEnergy,
-                            int geneLength, int minMutationCount, int maxMutationCount) {
+    public SimulationEngine(IWorldMap map, int refreshTime, int initialAnimals, int initialAnimalEnergy, int geneLength,
+                            int minMutationCount, int maxMutationCount) {
         this.map = map;
         this.refreshTime = refreshTime;
         this.geneLength = geneLength;
         this.minMutationCount = minMutationCount;
         this.maxMutationCount = maxMutationCount;
 
-        for (Vector2d position : initialPositions) {
-            createAnimal(position, animalEnergy);
+        createAndPlaceInitialAnimals(initialAnimals, initialAnimalEnergy);
+    }
+
+    private void createAndPlaceInitialAnimals(int initialAnimals, int initialAnimalEnergy){
+        ArrayList<Vector2d> freePositions = map.generateFreePositions();
+        Random rand = new Random();
+        Vector2d position;
+
+        for (int i = 0; i < initialAnimals; i++){
+            position = freePositions.get(rand.nextInt(freePositions.size()));
+            freePositions.remove(position);
+            this.createAndPlaceAnimal(position, initialAnimalEnergy);
         }
     }
 
-    private void createAnimal(Vector2d position, int animalEnergy) {
+    private void createAndPlaceAnimal(Vector2d position, int animalEnergy) {
         Animal newAnimal = new Animal(position, animalEnergy, this.geneLength, map);
         newAnimal.getAnimalGene().updateMutationCount(this.minMutationCount, this.maxMutationCount);
         animalsList.add(newAnimal);

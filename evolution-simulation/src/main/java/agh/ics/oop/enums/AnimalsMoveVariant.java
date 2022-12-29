@@ -9,4 +9,11 @@ public enum AnimalsMoveVariant {
             default -> throw new IllegalStateException("Unexpected value: " + animalsMoveVariant);
         };
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case FULL_PREDESTINATION -> "Full Predestination";
+        };
+    }
 }

@@ -9,4 +9,11 @@ public enum MapVariant {
             default -> throw new IllegalStateException("Unexpected value: " + mapVariant);
         };
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case SPHERICAL_EARTH -> "Spherical Earth";
+        };
+    }
 }

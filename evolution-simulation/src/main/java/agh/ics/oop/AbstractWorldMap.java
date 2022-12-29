@@ -21,24 +21,28 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
 
     protected AbstractWorldMap(int width, int height, IPlantsSpawner plantsSpawner, int plantsDailyGrow,
-                               int plantsEnergy, int animalReadyForReproductionEnergy, int animalReproductionLostEnergy) {
+                               int plantsEnergy, int energyRequiredToReproduce, int reproductionEnergyLoss) {
         this.width = width;
         this.height = height;
         this.upperRight = new Vector2d(width - 1, height - 1);
         this.plantsSpawner = plantsSpawner;
         this.plantsDailyGrow = plantsDailyGrow;
         this.plantsGrowEnergy = plantsEnergy;
-        this.animalReadyForReproductionEnergy = animalReadyForReproductionEnergy;
-        this.animalReproductionLostEnergy = animalReproductionLostEnergy;
-        generateFreePositions();
+        this.animalReadyForReproductionEnergy = energyRequiredToReproduce;
+        this.animalReproductionLostEnergy = reproductionEnergyLoss;
+        this.freePositionsForPlants = generateFreePositions();
     }
 
-    private void generateFreePositions() {
+    public ArrayList<Vector2d> generateFreePositions() {
+        ArrayList<Vector2d> freePositions = new ArrayList<>();
+
         for (int j = 0; j < width; j++) {
             for (int i = 0; i < height; i++) {
-                freePositionsForPlants.add(new Vector2d(i, j));
+                freePositions.add(new Vector2d(i, j));
             }
         }
+
+        return freePositions;
     }
 
     public void growPlants(int numberOfPlantsToGrow, int plantEnergy) {

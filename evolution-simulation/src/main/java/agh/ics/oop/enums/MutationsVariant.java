@@ -9,4 +9,11 @@ public enum MutationsVariant {
             default -> throw new IllegalStateException("Unexpected value: " + mutationsVariant);
         };
     }
+
+    @Override
+    public String toString() {
+        return switch (this) {
+            case FULLY_RANDOMIZED -> "Fully Randomized";
+        };
+    }
 }
