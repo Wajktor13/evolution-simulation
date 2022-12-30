@@ -47,8 +47,8 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     public ArrayList<Vector2d> generateFreePositions() {
         ArrayList<Vector2d> freePositions = new ArrayList<>();
 
-        for (int j = 0; j < width; j++) {
-            for (int i = 0; i < height; i++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 freePositions.add(new Vector2d(i, j));
             }
         }
