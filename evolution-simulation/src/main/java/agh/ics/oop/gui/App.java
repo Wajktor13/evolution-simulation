@@ -17,6 +17,8 @@ import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 
+import java.io.FileNotFoundException;
+
 
 public class App extends Application {
     private static final int settingsSceneWidth = 475;
@@ -284,16 +286,22 @@ public class App extends Application {
 
     private static void addMapObjectsToGrid(GridPane grid, IWorldMap map, int rows, int rowsStart, int cols,
                                             int colsStart, int cellSize){
-        VBox box;
-        for (int x = 0; x < cols; x++){
-            for (int y = 0; y < rows; y++){
-                Object element = map.objectAt(new Vector2d(colsStart + x, rows + rowsStart - y - 1));
-                if (element != null){
-                    box = new GuiElementBox(cellSize, (IMapGuiElement) element).getBox();
-                    GridPane.setHalignment(box, HPos.CENTER);
-                    grid.add(box, x, y, 1, 1);
+        GuiElementBox elementCreator;
+        try {
+            elementCreator = new GuiElementBox();
+            for (int x = 0; x < cols; x++) {
+                for (int y = 0; y < rows; y++) {
+                    Object element = map.objectAt(new Vector2d(colsStart + x, rows + rowsStart - y - 1));
+                    if (element != null) {
+                        VBox sq = elementCreator.getBox(cellSize, (IMapGuiElement) element);
+                        grid.add(sq, x, y);
+                        GridPane.setHalignment(sq, HPos.CENTER);
+                    }
                 }
             }
+        }
+        catch (FileNotFoundException exception){
+            System.out.println("Couldn't load files");
         }
     }
 
