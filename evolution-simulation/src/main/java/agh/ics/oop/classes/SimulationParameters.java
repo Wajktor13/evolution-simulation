@@ -7,73 +7,94 @@ import agh.ics.oop.enums.PlantsGrowVariant;
 
 public class SimulationParameters {
 
-    public final int mapHeight;
-    public final int mapWidth;
-    public final MapVariant mapVariant;
+    public int mapHeight;
+    public int mapWidth;
+    public MapVariant mapVariant;
 
-    public final int initialPlants;
-    public final int plantEnergy;
-    public final int dailyPlantsGrow;
-    public final PlantsGrowVariant plantsGrowVariant;
+    public int initialPlants;
+    public int plantEnergy;
+    public int dailyPlantsGrow;
+    public PlantsGrowVariant plantsGrowVariant;
 
-    public final int initialAnimals;
-    public final int initialAnimalEnergy;
-    public final int energyRequiredToReproduce;
-    public final int reproductionEnergyLoss;
-    public final AnimalsMoveVariant animalMoveVariant;
+    public int initialAnimals;
+    public int initialAnimalEnergy;
+    public int energyRequiredToReproduce;
+    public int reproductionEnergyLoss;
+    public AnimalsMoveVariant animalMoveVariant;
 
-    public final int minMutations;
-    public final int maxMutations;
-    public final MutationsVariant mutationVariant;
-    public final int geneLength;
+    public int minMutations;
+    public int maxMutations;
+    public MutationsVariant mutationVariant;
+    public int geneLength;
 
-    public final int equatorHeight;
+    public int equatorHeight;
 
-    public final int dayDuration;
+    public int dayDuration;
 
     public SimulationParameters(String mapHeight, String mapWidth, String mapVariant, String initialPlants,
                                 String plantEnergy, String dailyPlantsGrow, String plantsGrowVariant,
                                 String initialAnimals, String initialAnimalEnergy, String energyRequiredToReproduce,
                                 String reproductionEnergyLoss, String animalMoveVariant, String minMutations,
-                                String maxMutations, String mutationVariant, String geneLength, String dayDuration){
+                                String maxMutations, String mutationVariant, String geneLength, String dayDuration) throws Exception{
 
         /*
             validation?
          */
+        try {
+            this.mapHeight = Integer.parseInt(mapHeight);
+            this.mapWidth = Integer.parseInt(mapWidth);
+            this.initialPlants = Integer.parseInt(initialPlants);
+            this.plantEnergy = Integer.parseInt(plantEnergy);
+            this.dailyPlantsGrow = Integer.parseInt(dailyPlantsGrow);
+            this.initialAnimals = Integer.parseInt(initialAnimals);
+            this.initialAnimalEnergy = Integer.parseInt(initialAnimalEnergy);
+            this.energyRequiredToReproduce = Integer.parseInt(energyRequiredToReproduce);
+            this.reproductionEnergyLoss = Integer.parseInt(reproductionEnergyLoss);
+            this.minMutations = Integer.parseInt(minMutations);
+            this.maxMutations = Integer.parseInt(maxMutations);
+            this.geneLength = Integer.parseInt(geneLength);
+            this.dayDuration = Integer.parseInt(dayDuration);
 
-        this.mapHeight = Integer.parseInt(mapHeight);
-        this.mapWidth = Integer.parseInt(mapWidth);
-        this.initialPlants = Integer.parseInt(initialPlants);
-        this.plantEnergy = Integer.parseInt(plantEnergy);
-        this.dailyPlantsGrow = Integer.parseInt(dailyPlantsGrow);
-        this.initialAnimals = Integer.parseInt(initialAnimals);
-        this.initialAnimalEnergy = Integer.parseInt(initialAnimalEnergy);
-        this.energyRequiredToReproduce = Integer.parseInt(energyRequiredToReproduce);
-        this.reproductionEnergyLoss = Integer.parseInt(reproductionEnergyLoss);
-        this.minMutations = Integer.parseInt(minMutations);
-        this.maxMutations = Integer.parseInt(maxMutations);
-        this.geneLength = Integer.parseInt(geneLength);
-        this.dayDuration = Integer.parseInt(dayDuration);
+            this.mapVariant = MapVariant.toMapVariant(mapVariant);
+            this.plantsGrowVariant = PlantsGrowVariant.toPlantsGrowVariant(plantsGrowVariant);
+            this.animalMoveVariant = AnimalsMoveVariant.toAnimalsMoveVariant(animalMoveVariant);
+            this.mutationVariant = MutationsVariant.toMutationsVariant(mutationVariant);
 
-        this.mapVariant = MapVariant.toMapVariant(mapVariant);
-        this.plantsGrowVariant = PlantsGrowVariant.toPlantsGrowVariant(plantsGrowVariant);
-        this.animalMoveVariant = AnimalsMoveVariant.toAnimalsMoveVariant(animalMoveVariant);
-        this.mutationVariant = MutationsVariant.toMutationsVariant(mutationVariant);
-
-        this.equatorHeight = Math.floorDiv(this.mapHeight, 3);
+            this.equatorHeight = Math.floorDiv(this.mapHeight, 3);
+            if (this.mapHeight <= 0 || this.mapWidth <= 0){
+                throw new TooSmallMapException();
+            }
+            else if (this.energyRequiredToReproduce < this.reproductionEnergyLoss){
+                throw new EnergyException();
+            }
+            else if (this.minMutations > this.maxMutations){
+                throw new MutationsException();
+            }
+        }
+        catch (NumberFormatException e){
+            throw e;
+        }
     }
 
     public static SimulationParameters getPredefinedParameters1(){
-        return new SimulationParameters("10", "10", "Spherical Earth", "5",
-                "5", "3", "Prefer Equator", "10", "25",
-                "10", "8", "Full Predestination", "1",
-                "4", "Fully Randomized", "8", "300");
+        try {
+            return new SimulationParameters("10", "10", "Spherical Earth", "5",
+                    "5", "3", "Prefer Equator", "10", "25",
+                    "10", "8", "Full Predestination", "1",
+                    "4", "Fully Randomized", "8", "300");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static SimulationParameters getPredefinedParameters2(){
-        return new SimulationParameters("20", "20", "Spherical Earth", "10",
-                "10", "5", "Prefer Equator", "15", "30",
-                "10", "6", "Full Predestination", "2",
-                "6", "Fully Randomized", "10", "600");
+        try {
+            return new SimulationParameters("20", "20", "Spherical Earth", "10",
+                    "10", "5", "Prefer Equator", "15", "30",
+                    "10", "6", "Full Predestination", "2",
+                    "6", "Fully Randomized", "10", "600");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

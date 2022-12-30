@@ -3,16 +3,18 @@ package agh.ics.oop.gui;
 import agh.ics.oop.classes.*;
 import agh.ics.oop.enums.MapVariant;
 import agh.ics.oop.enums.PlantsGrowVariant;
-import agh.ics.oop.enums.SimulationStatus;
 import agh.ics.oop.interfaces.IPlantsSpawner;
 import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Parent;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -21,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 
 public class App extends Application {
@@ -29,6 +32,7 @@ public class App extends Application {
     private static final int simulationSceneWidth = 725;
     private static final int simulationSceneHeight = 725;
     private static final int simulationButtonSectionHeight = 80;
+    private ArrayList<XYChart.Series<Number, Number>> chartSeriesArray;
     private Scene settingsScene;
 
     @Override
@@ -190,15 +194,48 @@ public class App extends Application {
 
         startButton.setOnAction(event ->
         {
-            SimulationParameters newSimulationParameters = new SimulationParameters(mapHeightInput.getText(),
-                    mapWidthInput.getText(), mapVariantInput.getValue(), initialPlantsInput.getText(),
-                    plantsEnergyInput.getText(), dailyPlantsGrowInput.getText(), plantsGrowVariantInput.getValue(),
-                    initialAnimalsInput.getText(), initialAnimalsEnergyInput.getText(),
-                    energyRequiredToReproduceInput.getText(), reproductionEnergyLossInput.getText(),
-                    animalsMoveVariantInput.getValue(), minMutationsInput.getText(), maxMutationsInput.getText(),
-                    mutationsVariantInput.getValue(), geneLengthInput.getText(), dayDurationInput.getText());
+            try {
+                SimulationParameters newSimulationParameters = new SimulationParameters(mapHeightInput.getText(),
+                        mapWidthInput.getText(), mapVariantInput.getValue(), initialPlantsInput.getText(),
+                        plantsEnergyInput.getText(), dailyPlantsGrowInput.getText(), plantsGrowVariantInput.getValue(),
+                        initialAnimalsInput.getText(), initialAnimalsEnergyInput.getText(),
+                        energyRequiredToReproduceInput.getText(), reproductionEnergyLossInput.getText(),
+                        animalsMoveVariantInput.getValue(), minMutationsInput.getText(), maxMutationsInput.getText(),
+                        mutationsVariantInput.getValue(), geneLengthInput.getText(), dayDurationInput.getText());
 
-            this.createAndRunNewSimulation(newSimulationParameters);
+                this.createAndRunNewSimulation(newSimulationParameters);
+            }
+            catch (Exception e){
+                String toPrint = String.valueOf(e);
+                Stage popUpWindow = new Stage();
+                if (e instanceof NumberFormatException){
+                    toPrint = "All parameters must be Integers";
+                }
+                else if (e instanceof TooSmallMapException){
+                    toPrint = "Map width and height should be greater than 0";
+                }
+                else if (e instanceof EnergyException){
+                    toPrint = "Energy lost from reproduction can't be greater than energy needed for i!t";
+                }
+                else if (e instanceof MutationsException){
+                    toPrint = "MinMutationsCount can't be grater than MaxMutationsCount!";
+                }
+
+                popUpWindow.initModality(Modality.APPLICATION_MODAL);
+                popUpWindow.setTitle("SOMETHING WENT WRONG!");
+
+                Label errorLabel = new Label(toPrint);
+                errorLabel.setFont(new Font(16));
+                Button okayButton = new Button("OK");
+
+                okayButton.setOnAction(ev -> popUpWindow.close());
+                VBox popupLayout = new VBox(errorLabel, okayButton);
+                popupLayout.setAlignment(Pos.CENTER);
+
+                Scene popupScene = new Scene(popupLayout, 550, 60);
+                popUpWindow.setScene(popupScene);
+                popUpWindow.showAndWait();
+            }
         });
 
         settingsScene = new Scene(settingsGrid, App.settingsSceneWidth, App.settingsSceneHeight);
@@ -209,7 +246,8 @@ public class App extends Application {
         IWorldMap newMap;
         IPlantsSpawner newPlantsSpawner;
         Stage newSimulationStage = new Stage();
-        StackPane gridAndButtonContainer;
+        HBox mainContainer, chartContainer;
+        VBox gridAndButtonContainer;
 
         if (newSimulationParameters.plantsGrowVariant == PlantsGrowVariant.PREFER_EQUATOR){
             newPlantsSpawner = new EquatorPlantsSpawner(newSimulationParameters.mapHeight,
@@ -238,13 +276,17 @@ public class App extends Application {
                     newSimulationParameters.plantEnergy, newSimulationParameters.energyRequiredToReproduce,
                     newSimulationParameters.reproductionEnergyLoss);
         }
+        mainContainer = this.createNewSimulationWindow(newMap, newSimulationStage);
+        gridAndButtonContainer = (VBox) mainContainer.getChildren().get(0);
 
-        gridAndButtonContainer = this.createNewSimulationWindow(newMap, newSimulationStage);
+        ArrayList<XYChart.Series<Number, Number>> chartSeriesArray;
+        chartSeriesArray = getChartSeriesArray();
 
         newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
                 newSimulationParameters.initialAnimals, newSimulationParameters.initialAnimalEnergy,
                 newSimulationParameters.geneLength, newSimulationParameters.minMutations,
-                newSimulationParameters.maxMutations, ((GridPane) gridAndButtonContainer.getChildren().get(0)));
+                newSimulationParameters.maxMutations, ((GridPane) gridAndButtonContainer.getChildren().get(0)),
+                chartSeriesArray);
 
         Thread newEngineThread = new Thread(newSimulationEngine);
         newSimulationStage.setOnHiding( event ->  {newEngineThread.stop();});
@@ -257,7 +299,13 @@ public class App extends Application {
         newEngineThread.start();
     }
 
-    private StackPane createNewSimulationWindow(IWorldMap newMap, Stage newSimulationStage){
+    private ArrayList<XYChart.Series<Number, Number>> getChartSeriesArray(){
+        ArrayList<XYChart.Series<Number, Number>> toReturn = this.chartSeriesArray;
+        this.chartSeriesArray = null;
+        return toReturn;
+    }
+
+    private HBox createNewSimulationWindow(IWorldMap newMap, Stage newSimulationStage){
         Vector2d lowerLeft = newMap.getLowerLeft();
         Vector2d upperRight = newMap.getUpperRight();
         int rows = upperRight.getY() - lowerLeft.getY() + 1;
@@ -276,18 +324,57 @@ public class App extends Application {
         Button newButton = new Button("PAUSE / RESUME SIMULATION");
         newButton.setPadding(new Insets(10, 10, 10, 10));
 
-        StackPane newStackPane = new StackPane();
-        newStackPane.getChildren().addAll(newGrid, newButton);
-        newStackPane.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-        StackPane.setAlignment(newButton, Pos.BOTTOM_CENTER);
+        VBox mapButtonBox = new VBox(newGrid, newButton);
+        mapButtonBox.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+        mapButtonBox.setMaxHeight(App.simulationSceneHeight);
+        mapButtonBox.setAlignment(Pos.BOTTOM_CENTER);
+        // Charts
+        XYChart.Series<Number, Number> animalsChartSeries = new XYChart.Series<>();
+        XYChart.Series<Number, Number> plantsChartSeries = new XYChart.Series<>();
+        XYChart.Series<Number, Number> avgEnergyChartSeries = new XYChart.Series<>();
+        XYChart.Series<Number, Number> avgKidsChartSeries = new XYChart.Series<>();
+        XYChart.Series<Number, Number> avgLifeSpanChartSeries = new XYChart.Series<>();
+        ArrayList<XYChart.Series<Number, Number>> chartSeriesArray;
 
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
 
-        Scene newScene = new Scene(newStackPane, App.simulationSceneWidth, App.simulationSceneHeight);
+        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Simulation statistics");
+
+        animalsChartSeries.setName("Total animals");
+        plantsChartSeries.setName("Total plants");
+        avgEnergyChartSeries.setName("AVG energy");
+        avgKidsChartSeries.setName("AVG count of children for Animals");
+        avgLifeSpanChartSeries.setName("AVG lifespan of DeadAnimals");
+
+        lineChart.getData().add(animalsChartSeries);
+        lineChart.getData().add(plantsChartSeries);
+        lineChart.getData().add(avgEnergyChartSeries);
+        lineChart.getData().add(avgKidsChartSeries);
+        lineChart.getData().add(avgLifeSpanChartSeries);
+
+        chartSeriesArray = new ArrayList<>(){
+            {
+                add(animalsChartSeries);
+                add(plantsChartSeries);
+                add(avgEnergyChartSeries);
+                add(avgKidsChartSeries);
+                add(avgLifeSpanChartSeries);
+            }
+        };
+
+        this.chartSeriesArray = chartSeriesArray;
+        lineChart.setPrefWidth(500);
+        HBox chartsBox = new HBox(lineChart);
+        // end Charts
+        HBox appWindow = new HBox(mapButtonBox, chartsBox);
+        Scene newScene = new Scene(appWindow, App.simulationSceneWidth + 450, App.simulationSceneHeight);
         newSimulationStage.setScene(newScene);
-
+        chartsBox.setMaxHeight(App.simulationSceneHeight - 100);
         newSimulationStage.show();
 
-        return newStackPane;
+        return appWindow;
     }
 
     public static void renderGrid(GridPane grid, IWorldMap map){
@@ -302,7 +389,15 @@ public class App extends Application {
 
         App.addMapObjectsToGrid(grid, map, rows, lowerLeft.getY(), cols, lowerLeft.getX(), cellSize);
     }
+    public static void renderCharts(ArrayList<XYChart.Series<Number, Number>> chartSeriesArray, int daysPassed, double animalCount, double plantsCount,
+                                    double avgEnergy, double avgChildrenCount, double avgLifespan){
+        chartSeriesArray.get(0).getData().add(new XYChart.Data<>(daysPassed, animalCount));
+        chartSeriesArray.get(1).getData().add(new XYChart.Data<>(daysPassed, plantsCount));
+        chartSeriesArray.get(2).getData().add(new XYChart.Data<>(daysPassed, avgEnergy));
+        chartSeriesArray.get(3).getData().add(new XYChart.Data<>(daysPassed, avgChildrenCount));
+        chartSeriesArray.get(4).getData().add(new XYChart.Data<>(daysPassed, (int) avgLifespan));
 
+    }
     private static void addMapObjectsToGrid(GridPane grid, IWorldMap map, int rows, int rowsStart, int cols,
                                             int colsStart, int cellSize){
         GuiElementBox elementCreator;

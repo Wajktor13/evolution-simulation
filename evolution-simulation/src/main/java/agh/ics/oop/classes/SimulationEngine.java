@@ -4,6 +4,8 @@ import agh.ics.oop.enums.SimulationStatus;
 import agh.ics.oop.gui.App;
 import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Platform;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
@@ -17,13 +19,17 @@ public class SimulationEngine implements Runnable {
     private final int refreshTime;
     private final int geneLength;
     private final GridPane grid;
+    private ArrayList<XYChart.Series<Number, Number>> chartSeriesArray;
     private final int minMutationCount;
     private final int maxMutationCount;
     private final int initialAnimalEnergy;
+    private int daysPassed;
+    private int totalDaysLived;
+    private int deadAnimalsCount;
     private SimulationStatus simulationStatus = SimulationStatus.RUNNING;
 
     public SimulationEngine(IWorldMap map, int refreshTime, int initialAnimals, int initialAnimalEnergy, int geneLength,
-                            int minMutationCount, int maxMutationCount, GridPane grid) {
+                            int minMutationCount, int maxMutationCount, GridPane grid, ArrayList<XYChart.Series<Number, Number>> chartSeriesArray) {
         this.map = map;
         this.refreshTime = refreshTime;
         this.geneLength = geneLength;
@@ -31,7 +37,10 @@ public class SimulationEngine implements Runnable {
         this.maxMutationCount = maxMutationCount;
         this.grid = grid;
         this.initialAnimalEnergy = initialAnimalEnergy;
-
+        this.daysPassed = 0;
+        this.chartSeriesArray = chartSeriesArray;
+        this.totalDaysLived = 0;
+        this.deadAnimalsCount = 0;
         createAndPlaceInitialAnimals(initialAnimals, initialAnimalEnergy);
     }
 
@@ -55,13 +64,14 @@ public class SimulationEngine implements Runnable {
 
     private void updateAnimals(int energyChange, int ageChange) {
         ListIterator<Animal> iter = animalsList.listIterator();
-
+        this.daysPassed += ageChange;
         while (iter.hasNext()) {
             Animal animal = iter.next();
 
             animal.changeEnergy(energyChange);
             if (animal.getEnergy() < 0) {
-
+                this.totalDaysLived += animal.getAge();
+                this.deadAnimalsCount += 1;
                 this.map.removeAnimalFromPosition(animal, animal.getPosition());
                 iter.remove();
             } else {
@@ -81,6 +91,29 @@ public class SimulationEngine implements Runnable {
         this.map.growPlants(this.map.getPlantsDailyGrow(), this.map.getPlantsGrowEnergy());
     }
 
+    private double getAvgEnergy(){
+        int totalEnergy = 0;
+        int animalsCount = 0;
+        for (Animal a: animalsList){
+            totalEnergy += a.getEnergy();
+            animalsCount += 1;
+        }
+        return (totalEnergy * 1.0) / animalsCount;
+    }
+
+    private double getAvgChildrenCount(){
+        int totalChildrenCount = 0;
+        int animalsCount = 0;
+        for (Animal a: animalsList){
+            totalChildrenCount += a.getChildCounter();
+            animalsCount += 1;
+        }
+        return (totalChildrenCount * 1.0) / animalsCount;
+    }
+
+    private double getAvgLifespan(){
+        return (this.totalDaysLived * 1.0)/this.deadAnimalsCount;
+    }
     @Override
     public void run() {
         do {
@@ -98,6 +131,8 @@ public class SimulationEngine implements Runnable {
 
             Platform.runLater(() -> {
                 App.renderGrid(this.grid, this.map);
+                App.renderCharts(this.chartSeriesArray, this.daysPassed, animalsList.size(),
+                        this.map.getTotalPlantCount(), getAvgEnergy(), getAvgChildrenCount(), getAvgLifespan());
             });
 
         }

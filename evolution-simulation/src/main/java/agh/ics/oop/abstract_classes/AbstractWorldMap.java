@@ -25,6 +25,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     private ArrayList<Vector2d> freePositionsForPlants = new ArrayList<Vector2d>();
     private int plantsDailyGrow;
     private int plantsGrowEnergy;
+    private int totalPlantsCount;
     private final int animalReadyForReproductionEnergy;
     private final int animalReproductionLostEnergy;
 
@@ -41,6 +42,7 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
         this.animalReadyForReproductionEnergy = energyRequiredToReproduce;
         this.animalReproductionLostEnergy = reproductionEnergyLoss;
         this.freePositionsForPlants = generateFreePositions();
+        this.totalPlantsCount = 0;
         this.growPlants(initialPlants, plantsEnergy);
     }
 
@@ -87,15 +89,20 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
 
         animalsAtPosition.add(animal);
     }
-
+    @Override
+    public int getTotalPlantCount(){
+        return this.totalPlantsCount;
+    }
     @Override
     public void placePlant(Plant plant) {
+        this.totalPlantsCount += 1;
         this.plantsHashMap.put(plant.getPosition(), plant);
         freePositionsForPlants.remove(plant.getPosition());
     }
 
     @Override
     public void removePlant(Plant plant){
+        this.totalPlantsCount -= 1;
         this.plantsHashMap.remove(plant.position);
     }
 
