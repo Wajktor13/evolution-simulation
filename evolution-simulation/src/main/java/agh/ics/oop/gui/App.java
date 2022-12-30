@@ -3,10 +3,13 @@ package agh.ics.oop.gui;
 import agh.ics.oop.classes.*;
 import agh.ics.oop.enums.MapVariant;
 import agh.ics.oop.enums.PlantsGrowVariant;
+import agh.ics.oop.enums.SimulationStatus;
 import agh.ics.oop.interfaces.IPlantsSpawner;
 import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -25,6 +28,7 @@ public class App extends Application {
     private static final int settingsSceneHeight = 725;
     private static final int simulationSceneWidth = 725;
     private static final int simulationSceneHeight = 725;
+    private static final int simulationButtonSectionHeight = 80;
     private Scene settingsScene;
 
     @Override
@@ -150,6 +154,7 @@ public class App extends Application {
         settingsGrid.add(startButton,0,18,2,2);
         GridPane.setHalignment(startButton, HPos.CENTER);
         GridPane.setValignment(startButton, VPos.CENTER);
+        startButton.setPadding(new Insets(10, 10, 10, 10));
 
         loadPredefinedSettingsInput.setOnAction(event ->
         {
@@ -200,10 +205,11 @@ public class App extends Application {
     }
 
     private void createAndRunNewSimulation(SimulationParameters newSimulationParameters){
+        SimulationEngine newSimulationEngine;
         IWorldMap newMap;
         IPlantsSpawner newPlantsSpawner;
-        GridPane newGrid;
         Stage newSimulationStage = new Stage();
+        StackPane gridAndButtonContainer;
 
         if (newSimulationParameters.plantsGrowVariant == PlantsGrowVariant.PREFER_EQUATOR){
             newPlantsSpawner = new EquatorPlantsSpawner(newSimulationParameters.mapHeight,
@@ -233,21 +239,25 @@ public class App extends Application {
                     newSimulationParameters.reproductionEnergyLoss);
         }
 
-        newGrid = this.createNewSimulationWindow(newMap, newSimulationStage);
-        newGrid.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+        gridAndButtonContainer = this.createNewSimulationWindow(newMap, newSimulationStage);
 
-        SimulationEngine newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
+        newSimulationEngine = new SimulationEngine(newMap, newSimulationParameters.dayDuration,
                 newSimulationParameters.initialAnimals, newSimulationParameters.initialAnimalEnergy,
                 newSimulationParameters.geneLength, newSimulationParameters.minMutations,
-                newSimulationParameters.maxMutations, newGrid);
+                newSimulationParameters.maxMutations, ((GridPane) gridAndButtonContainer.getChildren().get(0)));
 
         Thread newEngineThread = new Thread(newSimulationEngine);
         newSimulationStage.setOnHiding( event ->  {newEngineThread.stop();});
 
+        ((Button) gridAndButtonContainer.getChildren().get(1)).setOnAction(event -> {
+            newSimulationEngine.changeSimulationStatus();
+
+        });
+
         newEngineThread.start();
     }
 
-    private GridPane createNewSimulationWindow(IWorldMap newMap, Stage newSimulationStage){
+    private StackPane createNewSimulationWindow(IWorldMap newMap, Stage newSimulationStage){
         Vector2d lowerLeft = newMap.getLowerLeft();
         Vector2d upperRight = newMap.getUpperRight();
         int rows = upperRight.getY() - lowerLeft.getY() + 1;
@@ -258,17 +268,26 @@ public class App extends Application {
         newSimulationStage.getIcons().add(new Image("file:src/main/resources/animal.png"));
         newSimulationStage.setTitle("Evolution Simulation");
 
-
         GridPane newGrid = new GridPane();
         for (int i = 0; i < cols; i++) newGrid.getColumnConstraints().add(new ColumnConstraints(cellSize));
         for (int i = 0; i < rows; i++) newGrid.getRowConstraints().add(new RowConstraints(cellSize));
         renderGrid(newGrid, newMap);
 
-        Scene newScene = new Scene(newGrid, App.simulationSceneWidth, App.simulationSceneHeight);
+        Button newButton = new Button("PAUSE / RESUME SIMULATION");
+        newButton.setPadding(new Insets(10, 10, 10, 10));
+
+        StackPane newStackPane = new StackPane();
+        newStackPane.getChildren().addAll(newGrid, newButton);
+        newStackPane.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+        StackPane.setAlignment(newButton, Pos.BOTTOM_CENTER);
+
+
+        Scene newScene = new Scene(newStackPane, App.simulationSceneWidth, App.simulationSceneHeight);
         newSimulationStage.setScene(newScene);
+
         newSimulationStage.show();
 
-        return newGrid;
+        return newStackPane;
     }
 
     public static void renderGrid(GridPane grid, IWorldMap map){
@@ -306,6 +325,6 @@ public class App extends Application {
     }
 
     private static double calculateCellSize(int availableLength, int numberOfCells){
-        return (availableLength) / numberOfCells;
+        return (availableLength - App.simulationButtonSectionHeight) / numberOfCells;
     }
 }

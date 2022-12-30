@@ -1,5 +1,6 @@
 package agh.ics.oop.classes;
 
+import agh.ics.oop.enums.SimulationStatus;
 import agh.ics.oop.gui.App;
 import agh.ics.oop.interfaces.IWorldMap;
 import javafx.application.Platform;
@@ -19,6 +20,7 @@ public class SimulationEngine implements Runnable {
     private final int minMutationCount;
     private final int maxMutationCount;
     private final int initialAnimalEnergy;
+    private SimulationStatus simulationStatus = SimulationStatus.RUNNING;
 
     public SimulationEngine(IWorldMap map, int refreshTime, int initialAnimals, int initialAnimalEnergy, int geneLength,
                             int minMutationCount, int maxMutationCount, GridPane grid) {
@@ -88,6 +90,8 @@ public class SimulationEngine implements Runnable {
                 throw new RuntimeException(e);
             }
 
+            if (this.simulationStatus == SimulationStatus.PAUSED) continue;
+
             this.updateAnimals(-1, 1);
             this.eatPlantsAndReproduce();
             this.growPlants();
@@ -98,5 +102,17 @@ public class SimulationEngine implements Runnable {
 
         }
         while (animalsList.size() != 0);
+    }
+
+    public SimulationStatus getSimulationStatus(){
+        return this.simulationStatus;
+    }
+
+    public void changeSimulationStatus(){
+        if (this.simulationStatus == SimulationStatus.RUNNING){
+            this.simulationStatus = SimulationStatus.PAUSED;
+        } else {
+            this.simulationStatus = SimulationStatus.RUNNING;
+        }
     }
 }
