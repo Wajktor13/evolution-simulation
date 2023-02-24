@@ -48,6 +48,10 @@ public class Vector2d {
         return this.y >= lower.y && this.y <= upper.y;
     }
 
+    public boolean xBetween(Vector2d lower, Vector2d upper) {
+        return this.x >= lower.x && this.x <= upper.x;
+    }
+
     public boolean hasLowerX(Vector2d v) {
         return this.x < v.x;
     }

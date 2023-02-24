@@ -181,6 +181,11 @@ public abstract class AbstractWorldMap implements IWorldMap, IPositionChangeObse
     }
 
     @Override
+    public int getAnimalReproductionLostEnergy(){
+        return this.animalReproductionLostEnergy;
+    }
+
+    @Override
     public ArrayList<Animal> updateFields() {
         ArrayList<Animal> animalsBorn = new ArrayList<>();
         for (Map.Entry<Vector2d, PriorityQueue<Animal>> entry : this.animalsHashMap.entrySet()){

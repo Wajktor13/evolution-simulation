@@ -56,7 +56,7 @@ public class App extends Application {
         TextField mapHeightInput = new TextField();
 
         ChoiceBox<String> mapVariantInput = new ChoiceBox<>();
-        mapVariantInput.getItems().addAll("Spherical Earth");
+        mapVariantInput.getItems().addAll("Spherical Earth", "Infernal Portal");
         mapVariantInput.getSelectionModel().selectFirst();
 
         TextField initialPlantsInput = new TextField();
@@ -267,11 +267,7 @@ public class App extends Application {
                     newSimulationParameters.plantEnergy, newSimulationParameters.energyRequiredToReproduce,
                     newSimulationParameters.reproductionEnergyLoss);
         } else {
-            /*
-            another map variant
-             */
-
-            newMap = new SphericalWorldMap(newSimulationParameters.mapWidth, newSimulationParameters.mapHeight,
+            newMap = new InfernalPortalWorldMap(newSimulationParameters.mapWidth, newSimulationParameters.mapHeight,
                     newPlantsSpawner, newSimulationParameters.initialPlants, newSimulationParameters.dailyPlantsGrow,
                     newSimulationParameters.plantEnergy, newSimulationParameters.energyRequiredToReproduce,
                     newSimulationParameters.reproductionEnergyLoss);
