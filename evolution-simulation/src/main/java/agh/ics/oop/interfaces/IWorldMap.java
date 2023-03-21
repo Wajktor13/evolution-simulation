@@ -123,5 +123,7 @@ public interface IWorldMap {
 
     int getTotalPlantCount();
 
+    int getAnimalReproductionLostEnergy();
+
     public ArrayList<Vector2d> generateFreePositions();
 }
