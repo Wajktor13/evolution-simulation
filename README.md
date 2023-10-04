@@ -1,9 +1,5 @@
-Autorzy: Szymon Banyś, Wiktor Wilkusz
+# Evolution Simulation
 
-Grupa: 2
+![Untitled](https://github.com/Wajktor13/evolution-simulation/assets/76243064/3f91bcbf-0c11-4e6f-b11f-3f42fafdb513)
 
-
-Niezaimplementowane wymagania:
-  - śledzenie wybranego zwierzęcia
-  - zapisywanie statystyk
-  - statystyki po zatrzymaniu symulacji
+Final assignment from Object-Oriented Programming course at AGH University. Created in collaboration with [borys3kk](https://github.com/borys3kk).
