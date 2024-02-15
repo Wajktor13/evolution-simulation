@@ -8,3 +8,4 @@ Final assignment from Object-Oriented Programming course at AGH University. Crea
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![JavaFX](https://img.shields.io/badge/JavaFX-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Gradle](https://img.shields.io/static/v1?style=for-the-badge&message=Gradle&color=02303A&logo=Gradle&logoColor=FFFFFF&label=)
